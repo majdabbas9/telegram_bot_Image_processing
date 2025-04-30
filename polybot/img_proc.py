@@ -57,20 +57,11 @@ class Img:
                 res.append(abs(row[j-1] - row[j]))
 
             self.data[i] = res
-
+            s
     def rotate(self):
         matrix = self.data
-        for i in range(len(matrix)):
-            for j in range(len(matrix[0])):
-                if i > j:
-                    matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
-        for i in range(len(matrix)):
-            matrix[i] = matrix[i][::-1]
-        self.data = matrix
-    # def rotate(self):
-    #     matrix = self.data
-    #     rotated = [[matrix[row][col] for row in reversed(range(len(matrix)))] for col in range(len(matrix[0]))]
-    #     self.data = rotated
+        rotated = [[matrix[row][col] for row in reversed(range(len(matrix)))] for col in range(len(matrix[0]))]
+        self.data = rotated
 
     def rotate_in_steps(self,steps):
         if steps>=4 or steps<=-4:
@@ -147,7 +138,21 @@ class Img:
         else :
             return None
 
-
+    def check_blur_in_filtername(self,filter_name):
+        if filter_name.startswith('blur') or filter_name.startswith('b'):
+            if len(filter_name) == 4 or filter_name=='b':
+                return 16
+            match = re.fullmatch(r'?\d+', filter_name[4:].replace(" ", ""))
+            if match:
+                return int(match.group())
+            else :
+                match = re.fullmatch(r'^b-?\d+$', filter_name.replace(" ", ""))
+                if match:
+                    return int(match.group()[1:])
+                else :
+                    return None
+        else :
+            return None
 
 if __name__ == '__main__':
     my_img = Img('images_to_test/1.jpg')

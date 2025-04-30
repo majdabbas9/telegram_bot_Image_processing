@@ -26,6 +26,9 @@ class Bot:
     def send_text(self, chat_id, text):
         self.telegram_bot_client.send_message(chat_id, text)
 
+    def send_help(self, chat_id, help_text):
+        self.telegram_bot_client.send_message(chat_id, help_text, parse_mode="HTML")
+
     def send_text_with_quote(self, chat_id, text, quoted_msg_id):
         self.telegram_bot_client.send_message(chat_id, text, reply_to_message_id=quoted_msg_id)
 
@@ -90,6 +93,7 @@ class ImageProcessingBot(Bot):
             the_img.rotate_in_steps(value)
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
+
         elif (caption in ['segment', 's']):
             the_img.segment()
             new_path = the_img.save_img()
@@ -102,6 +106,10 @@ class ImageProcessingBot(Bot):
 
         elif (caption in ['contour', 'c']):
             the_img.contour()
+            new_path = the_img.save_img()
+            self.send_photo(msg['chat']['id'], new_path)
+        elif (caption in ['blue','b']):
+            the_img.blur()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
         else :
@@ -128,6 +136,7 @@ class ImageProcessingBot(Bot):
                 img_base.concat(img2,direction=type)
                 new_path = img_base.save_img()
                 self.send_photo(chat_id, new_path)
+
         except Exception as e:
             logger.error(f"Error in process_media_group: {e}")
             self.send_text(chat_id, e)
@@ -137,8 +146,8 @@ class ImageProcessingBot(Bot):
             logger.info(f'Incoming message: {msg}')
             user_id = msg['from']['id']
             chat_id = msg['chat']['id']
-            msg_without_numbers = ''.join(c for c in msg['text'].replace(" ","") if not c.isdigit() and c != '-')
-            commands = ['rotate', 'r', 'saltandpepper', 's&p', 'segment', 's', 'contour', 'c']
+            msg_without_numbers = ''.join(c for c in msg['text'].replace(" ","") if not c.isdigit() and c != '-') if not self.is_current_msg_photo(msg) else ""
+            commands = ['rotate', 'r', 'saltandpepper', 's&p', 'segment', 's', 'contour', 'c','blue','b']
             if self.is_current_msg_photo(msg):
                 file_path = self.download_user_photo(msg)
                 if 'media_group_id' in msg:
@@ -155,6 +164,7 @@ class ImageProcessingBot(Bot):
                     caption = msg['caption'].lower() if 'caption' in msg else ''
                     the_img = Img(file_path)
                     self.handle_image_processing(msg, the_img, caption)
+
             elif (msg_without_numbers in commands):
                 filename = f"{user_id}.jpg"
                 filepath = os.path.join('last_image_inserted_by_clients', filename)
@@ -163,6 +173,28 @@ class ImageProcessingBot(Bot):
                     self.handle_image_processing(msg, the_img, msg["text"])
                 else:
                     self.send_text(chat_id, "No previous image found.")
+
+            elif (msg['text'].lower() in ["help", "commands", "help!"]):
+                help_message = (
+                    "<b>🛠 PolyBot Help Menu</b>\n\n"
+                    "<b>🖼 Basic Commands:</b>\n"
+                    "• <code>rotate</code> or <code>r</code> — Rotates the image by 90° by default \n"
+                    "• <code>rotate 2</code> or <code>r 2</code> to rotate in 180 degree\n"
+                    "• you can do a -180 degree rotation by using <code>rotate -2</code> or <code>r -2</code>\n\n"
+                    "• <code>salt and pepper</code> or <code>s&p</code> — Apply salt and pepper noise\n"
+                    "• <code>segment</code> or <code>s</code> — Segment the image\n"
+                    "• <code>contour</code> or <code>c</code> — Apply contour detection\n\n"
+                    "<b>🧩 Concat Images:</b>\n"
+                    "Send 2 photos as an album with one of these captions:\n"
+                    "• <code>concat</code> — Horizontal by default\n"
+                    "• <code>concat h</code> or <code>concat horizontal</code> — Horizontal concat\n"
+                    "• <code>concat v</code> or <code>concat vertical</code> — Vertical concat\n\n"
+                    "<b>ℹ️ Tips:</b>\n"
+                    "• Send a photo, then type a command to apply filters.\n"
+                    "• Say <code>hello</code> or <code>start</code> to begin.\n"
+                    "• a command with paramters will work without adding any spaces.\n"
+                )
+                self.send_help(chat_id, help_message)
             else:
                 self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
         except Exception as e:
