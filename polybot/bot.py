@@ -56,8 +56,13 @@ class Bot:
         user_id = msg['from']['id']
         new_file_path = os.path.join('last_image_inserted_by_clients', f"{user_id}.jpg")
 
-        with open(new_file_path, 'wb') as user_photo:
-            user_photo.write(data)
+        # Create the directory if it doesn't exist
+        os.makedirs('last_image_inserted_by_clients', exist_ok=True)
+
+        # Write the file only if it doesn't already exist
+        if not os.path.exists(new_file_path):
+            with open(new_file_path, 'wb') as user_photo:
+                user_photo.write(data)
 
 
         return file_info.file_path
@@ -108,6 +113,7 @@ class ImageProcessingBot(Bot):
             the_img.contour()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
+
         elif (caption in ['blue','b']):
             the_img.blur()
             new_path = the_img.save_img()
@@ -146,7 +152,7 @@ class ImageProcessingBot(Bot):
             logger.info(f'Incoming message: {msg}')
             user_id = msg['from']['id']
             chat_id = msg['chat']['id']
-            msg_without_numbers = ''.join(c for c in msg['text'].replace(" ","") if not c.isdigit() and c != '-') if not self.is_current_msg_photo(msg) else ""
+            msg_without_numbers = ''.join(c for c in msg['text'].replace(" ","").lower() if not c.isdigit() and c != '-') if not self.is_current_msg_photo(msg) else ""
             commands = ['rotate', 'r', 'saltandpepper', 's&p', 'segment', 's', 'contour', 'c','blue','b']
             if self.is_current_msg_photo(msg):
                 file_path = self.download_user_photo(msg)

@@ -57,7 +57,7 @@ class Img:
                 res.append(abs(row[j-1] - row[j]))
 
             self.data[i] = res
-            s
+
     def rotate(self):
         matrix = self.data
         rotated = [[matrix[row][col] for row in reversed(range(len(matrix)))] for col in range(len(matrix[0]))]
