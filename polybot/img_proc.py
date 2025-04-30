@@ -1,6 +1,6 @@
 from pathlib import Path
 from matplotlib.image import imread, imsave
-
+import re
 
 def rgb2gray(rgb):
     r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
@@ -15,7 +15,15 @@ class Img:
         Do not change the constructor implementation
         """
         self.path = Path(path)
-        self.data = rgb2gray(imread(path)).tolist()
+        if not self.path.exists():
+            raise RuntimeError(f"Image path does not exist: {self.path}")
+
+        # Check if the image is RGB
+        image_data = imread(path)
+        if image_data.ndim != 3 or image_data.shape[2] != 3:
+            raise RuntimeError("Input image is not in RGB format.")
+
+        self.data = rgb2gray(image_data).tolist()
 
     def save_img(self):
         """
@@ -51,17 +59,97 @@ class Img:
             self.data[i] = res
 
     def rotate(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        matrix = self.data
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                if i > j:
+                    matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+        for i in range(len(matrix)):
+            matrix[i] = matrix[i][::-1]
+        self.data = matrix
+    # def rotate(self):
+    #     matrix = self.data
+    #     rotated = [[matrix[row][col] for row in reversed(range(len(matrix)))] for col in range(len(matrix[0]))]
+    #     self.data = rotated
+
+    def rotate_in_steps(self,steps):
+        if steps>=4 or steps<=-4:
+            steps %=4
+
+        if steps < 0:
+            steps = 4 + steps
+
+        while steps  > 0:
+            self.rotate()
+            steps -= 1
 
     def salt_n_pepper(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        import random
+        matrix = self.data
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                number_in_01 = random.random()
+                if number_in_01 < 0.2:
+                    matrix[i][j] = 255
+                elif number_in_01 > 0.8:
+                    matrix[i][j] = 0
+        self.data = matrix
+
 
     def concat(self, other_img, direction='horizontal'):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        mat1 = self.data
+        mat2 = other_img.data
+        if direction == 'horizontal':
+            if len(mat1) != len(mat2):
+                raise ValueError("Images must have the same height for horizontal concatenation.")
+            result = []
+            for i in range(len(mat1)):
+                new_row = mat1[i]
+                new_row.extend(mat2[i])
+                result.append(new_row)
+            self.data = result
 
-    def segment(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        elif direction == 'vertical':
+            if len(mat1[0]) != len(mat2[0]):
+                raise ValueError("Images must have the same width for vertical concatenation.")
+            result = []
+            for i in range(len(mat1)):
+                new_row = mat1[i]
+                result.append(new_row)
+            for i  in range(len(mat2)):
+                new_row = mat2[i]
+                result.append(new_row)
+            self.data = result
+
+    def segment(self,segment_level=100):
+        matrix = self.data
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                if matrix[i][j] > segment_level:
+                    matrix[i][j] = 255
+                else:
+                    matrix[i][j] = 0
+        self.data = matrix
+
+    def check_rotate_in_filtername(self, filter_name):
+        if filter_name.startswith('rotate') or filter_name.startswith('r'):
+            if len(filter_name) == 6 or filter_name=='r':
+                return 1
+            match = re.fullmatch(r'-?\d+', filter_name[6:].replace(" ", ""))
+            if match:
+                return int(match.group())
+            else :
+                match = re.fullmatch(r'^r-?\d+$', filter_name.replace(" ", ""))
+                if match:
+                    return int(match.group()[1:])
+                else :
+                    return None
+        else :
+            return None
+
+
+
+if __name__ == '__main__':
+    my_img = Img('images_to_test/1.jpg')
+    # my_img.rotate_in_steps(-2)
+    # my_img.save_img()
