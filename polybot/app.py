@@ -1,12 +1,14 @@
 import flask
 from flask import request
 import os
-from bot import Bot, QuoteBot, ImageProcessingBot
+from polybot.bot import Bot, QuoteBot, ImageProcessingBot
+from dotenv import load_dotenv
 
 app = flask.Flask(__name__)
+load_dotenv()
 
-TELEGRAM_BOT_TOKEN = os.environ['TELEGRAM_BOT_TOKEN']
-BOT_APP_URL = os.environ['BOT_APP_URL']
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+BOT_APP_URL = os.getenv('BOT_APP_URL')
 
 
 @app.route('/', methods=['GET'])
