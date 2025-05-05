@@ -1,7 +1,14 @@
 from pathlib import Path
 from matplotlib.image import imread, imsave
 import re
-
+import requests
+import os
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.patches import Rectangle
+from PIL import Image, ImageDraw, ImageFont
+import cv2
+import base64
 def rgb2gray(rgb):
     r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
     gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
@@ -153,6 +160,56 @@ class Img:
                     return None
         else :
             return None
+
+    def detect_objects(self):
+        server_port = "http://localhost:8080"
+        file_path = str(self.path.resolve())
+
+        with open(file_path, "rb") as f:
+            files = {"file": f}
+            response = requests.post(f"{server_port}/predict", files=files)
+
+        if response.status_code == 200:
+            result = response.json()
+            uid = result["prediction_uid"]
+            print("Prediction UID:", uid)
+
+            url = f"{server_port}/prediction/{uid}"
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+
+                # Convert self.data (grayscale 2D list) to 8-bit NumPy array
+                img = np.array(self.data, dtype=np.uint8)
+
+                # Keep the image in grayscale (do not convert to RGB)
+                new_img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+
+                for obj in data["detection_objects"]:
+                    label = obj['label']
+                    score = obj['score']
+                    if score > 0.8:
+                        numbers = re.findall(r"[-+]?\d*\.\d+|\d+", obj['box'])
+                        x1, y1, x2, y2 = map(int, map(float, numbers))
+
+                        # Draw rectangle and label in black and white
+                        cv2.rectangle(new_img, (x1, y1), (x2, y2), (255, 0, 0), 2)  # Rectangle in black
+
+                        text = label
+                        (text_width, text_height), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
+
+                        # Center the text horizontally
+                        text_x = x1 + (x2 - x1 - text_width) // 2
+                        text_y = y1 - 10 if y1 - 10 > 10 else y1 + text_height + 10
+
+                        # Draw label in white color (contrast with black background)
+                        cv2.putText(new_img, text, (text_x, text_y),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                self.data = cv2.cvtColor(new_img, cv2.COLOR_BGR2RGB)
+
+            else:
+                print("Error:", response.status_code, response.text)
+
 
 if __name__ == '__main__':
     my_img = Img('images_to_test/1.jpg')

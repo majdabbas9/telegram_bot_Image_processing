@@ -7,6 +7,7 @@ from polybot.img_proc import Img
 import threading
 from collections import defaultdict
 import re
+import requests
 class Bot:
 
     def __init__(self, token, telegram_chat_url):
@@ -118,6 +119,11 @@ class ImageProcessingBot(Bot):
             the_img.blur()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
+
+        elif (caption in ['detect', 'd']):
+            the_img.detect_objects()
+            new_path = the_img.save_img()
+            self.send_photo(msg['chat']['id'], new_path)
         else :
             self.send_photo(msg['chat']['id'], 'no such command')
 
@@ -153,9 +159,10 @@ class ImageProcessingBot(Bot):
             user_id = msg['from']['id']
             chat_id = msg['chat']['id']
             msg_without_numbers = ''.join(c for c in msg['text'].replace(" ","").lower() if not c.isdigit() and c != '-') if not self.is_current_msg_photo(msg) else ""
-            commands = ['rotate', 'r', 'saltandpepper', 's&p', 'segment', 's', 'contour', 'c','blue','b']
+            commands = ['rotate', 'r', 'saltandpepper', 's&p', 'segment', 's', 'contour', 'c','blue','b','d','detect']
             if self.is_current_msg_photo(msg):
                 file_path = self.download_user_photo(msg)
+                #################################################################
                 if 'media_group_id' in msg:
                     group_id = msg['media_group_id']
                     self.media_groups[group_id].append(msg)
@@ -201,6 +208,8 @@ class ImageProcessingBot(Bot):
                     "• a command with paramters will work without adding any spaces.\n"
                 )
                 self.send_help(chat_id, help_message)
+            elif msg["text"] in ["hi","hello","hi!","hello!","start","start!"]:
+                self.send_text(msg['chat']['id'], "Hello! I'm PolyBot, your image processing assistant. Type 'help' to see what I can do!")
             else:
                 self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
         except Exception as e:
