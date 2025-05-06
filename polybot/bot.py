@@ -61,10 +61,8 @@ class Bot:
         os.makedirs('last_image_inserted_by_clients', exist_ok=True)
 
         # Write the file only if it doesn't already exist
-        if not os.path.exists(new_file_path):
-            with open(new_file_path, 'wb') as user_photo:
-                user_photo.write(data)
-
+        with open(new_file_path, 'wb') as user_photo:
+            user_photo.write(data)
 
         return file_info.file_path
 
