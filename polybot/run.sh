@@ -7,12 +7,6 @@ ENV_FILE="$path_to_file/polybot/.env"
 if [ ! -f "$ENV_FILE" ]; then
     echo "Creating .env file..."
     mkdir -p "$(dirname "$ENV_FILE")"
-    echo "TELEGRAM_BOT_TOKEN=7628018028:AAGB_oqqKXVykxqCkudMR9zcNEnqeNOqXh4" > "$ENV_FILE"
-else
-    if ! grep -q "TELEGRAM_BOT_TOKEN=" "$ENV_FILE"; then
-        echo "Adding TELEGRAM_BOT_TOKEN to .env file..."
-        echo "TELEGRAM_BOT_TOKEN=7628018028:AAGB_oqqKXVykxqCkudMR9zcNEnqeNOqXh4" >> "$ENV_FILE"
-    fi
 fi
 
 NGROK_PID=$(pgrep -f "ngrok http 8443")
