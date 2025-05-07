@@ -9,6 +9,11 @@ from matplotlib.patches import Rectangle
 from PIL import Image, ImageDraw, ImageFont
 import cv2
 import base64
+from dotenv import load_dotenv
+
+load_dotenv()
+ipYolo = os.getenv('ipYolo')
+
 def rgb2gray(rgb):
     r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
     gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
@@ -162,19 +167,18 @@ class Img:
             return None
 
     def detect_objects(self):
-        server_port = "http://localhost:8080"
         file_path = str(self.path.resolve())
 
         with open(file_path, "rb") as f:
             files = {"file": f}
-            response = requests.post(f"{server_port}/predict", files=files)
+            response = requests.post(f"{ipYolo}/predict", files=files)
 
         if response.status_code == 200:
             result = response.json()
             uid = result["prediction_uid"]
             print("Prediction UID:", uid)
 
-            url = f"{server_port}/prediction/{uid}"
+            url = f"{ipYolo}/prediction/{uid}"
             response = requests.get(url)
             if response.status_code == 200:
                 data = response.json()
