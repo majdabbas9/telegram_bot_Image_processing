@@ -7,7 +7,7 @@ sudo cp polybot.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl restart polybot.service
 sudo systemctl enable polybot.service
-
+sudo systemctl start polybot.service
 # Check if the service is active
 if ! systemctl is-active --quiet polybot.service; then
   echo "❌ polybot.service is not running."
