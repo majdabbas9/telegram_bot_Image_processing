@@ -154,7 +154,7 @@ class Img:
         if filter_name.startswith('blur') or filter_name.startswith('b'):
             if len(filter_name) == 4 or filter_name=='b':
                 return 16
-            match = re.fullmatch(r'?\d+', filter_name[4:].replace(" ", ""))
+            match = re.fullmatch(r'\?\d+', filter_name[4:].replace(" ", ""))
             if match:
                 return int(match.group())
             else :
