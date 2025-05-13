@@ -24,8 +24,11 @@ if [ ! -f "$env_file" ]; then
 else
     echo ".env file already exists."
 fi
-echo $path_to_file
 
-if [! -f "$path_to_file/.venv"]; then
-   python3 -m venv "$path_to_file/.venv"
-   "$path_to_file/.venv/bin/pip" install -r polybot/requirements.txt
+# Check if the virtual environment exists
+if [ ! -d "$path_to_file/.venv" ]; then  # Check if .venv is a directory
+    python3 -m venv "$path_to_file/.venv"
+    "$path_to_file/.venv/bin/pip" install -r "$path_to_file/polybot/requirements.txt"
+else
+    echo "Virtual environment already exists."
+fi
