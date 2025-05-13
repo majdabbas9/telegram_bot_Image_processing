@@ -209,7 +209,7 @@ class ImageProcessingBot(Bot):
             elif msg["text"].lower() in ["hi","hello","hi!","hello!","start","start!"]:
                 self.send_text(msg['chat']['id'], "Hello! I'm PolyBot, your image processing assistant. Type 'help' to see what I can do!")
             else:
-                self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
+                self.send_text(msg['chat']['id'], f'No commands like that!')
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             self.send_text(msg['chat']['id'], f"An error occurred: {e}")
