@@ -24,6 +24,7 @@ if [ ! -f "$env_file" ]; then
 else
     echo ".env file already exists."
 fi
+echo $path_to_file
 
 if [! -f "$path_to_file/.venv"]; then
    python3 -m venv "$path_to_file/.venv"
