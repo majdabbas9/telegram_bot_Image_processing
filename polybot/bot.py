@@ -206,7 +206,7 @@ class ImageProcessingBot(Bot):
                     "• a command with paramters will work without adding any spaces.\n"
                 )
                 self.send_help(chat_id, help_message)
-            elif msg["text"] in ["hi","hello","hi!","hello!","start","start!"]:
+            elif msg["text"].lower() in ["hi","hello","hi!","hello!","start","start!"]:
                 self.send_text(msg['chat']['id'], "Hello! I'm PolyBot, your image processing assistant. Type 'help' to see what I can do!")
             else:
                 self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
