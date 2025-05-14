@@ -171,7 +171,12 @@ class Img:
         file_path = str(self.path.resolve())
         s3_file_to_save = f'poly_to_yolo_images/{datetime.now(timezone.utc).strftime("%d%m%Y%H%M%S")}{chat_id}{self.path.suffix}'
         upload_file(file_path, 'majd-polybot-images-bucket', s3_file_to_save)
-        download_file('majd-polybot-images-bucket', s3_file_to_save,f"1{self.path.suffix}")
+        response = requests.post(f"{ipYolo}/predict?s3_key={s3_file_to_save}")
+        if response.status_code == 200:
+            download_file('majd-polybot-images-bucket', f'yolo_to_poly_images/{s3_file_to_save.split("/")[-1]}',f"tmp{self.path.suffix}")
+            self.data = imread(os.path.join(f"tmp{self.path.suffix}"))
+            os.remove(os.path.join(f"tmp{self.path.suffix}"))
+
 
 
 
