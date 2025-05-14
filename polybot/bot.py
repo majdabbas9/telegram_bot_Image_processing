@@ -92,34 +92,34 @@ class QuoteBot(Bot):
 class ImageProcessingBot(Bot):
     media_groups = defaultdict(list)
     timers = {}
-    def handle_image_processing(self, msg, the_img, caption):
+    def handle_image_processing(self, msg, the_img, caption,chat_id):
         if (value := the_img.check_rotate_in_filtername(caption)) is not None:
             the_img.rotate_in_steps(value)
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
 
-        elif (caption in ['segment', 's']):
+        elif caption in ['segment', 's']:
             the_img.segment()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
 
-        elif (caption.replace(" ", "") in ['saltandpepper', "s&p"]):
+        elif caption.replace(" ", "") in ['saltandpepper', "s&p"]:
             the_img.salt_n_pepper()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
 
-        elif (caption in ['contour', 'c']):
+        elif caption in ['contour', 'c']:
             the_img.contour()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
 
-        elif (caption in ['blue','b']):
+        elif caption in ['blue', 'b']:
             the_img.blur()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
 
-        elif (caption in ['detect', 'd']):
-            the_img.detect_objects()
+        elif caption in ['detect', 'd']:
+            the_img.detect_objects(chat_id)
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
         else :
@@ -138,12 +138,12 @@ class ImageProcessingBot(Bot):
             img2 = Img(self.download_user_photo(messages[1]))
             caption = messages[0]['caption'].replace(" ", "")
             if (match := re.match(r'^(cc|concat)(h|v|horizontal|vertical|)$', caption)) is not None:
-                type = match.groups()[1]
-                if type in ['h', 'horizontal', '']:
-                    type = 'horizontal'
-                elif type in ['v', 'vertical']:
-                    type = 'vertical'
-                img_base.concat(img2,direction=type)
+                concat_type = match.groups()[1]
+                if concat_type in ['h', 'horizontal', '']:
+                    concat_type = 'horizontal'
+                elif concat_type in ['v', 'vertical']:
+                    concat_type = 'vertical'
+                img_base.concat(img2,direction=concat_type)
                 new_path = img_base.save_img()
                 self.send_photo(chat_id, new_path)
 
@@ -174,18 +174,18 @@ class ImageProcessingBot(Bot):
                         return
                     caption = msg['caption'].lower() if 'caption' in msg else ''
                     the_img = Img(file_path)
-                    self.handle_image_processing(msg, the_img, caption)
+                    self.handle_image_processing(msg, the_img, caption,chat_id)
 
-            elif (msg_without_numbers in commands):
+            elif msg_without_numbers in commands:
                 filename = f"{user_id}.jpg"
                 filepath = os.path.join('last_image_inserted_by_clients', filename)
                 if filepath and os.path.exists(filepath):
                     the_img = Img(filepath)
-                    self.handle_image_processing(msg, the_img, msg["text"])
+                    self.handle_image_processing(msg, the_img, msg["text"],chat_id  )
                 else:
                     self.send_text(chat_id, "No previous image found.")
 
-            elif (msg['text'].lower() in ["help", "commands", "help!"]):
+            elif msg['text'].lower() in ["help", "commands", "help!"]:
                 help_message = (
                     "<b>🛠 PolyBot Help Menu</b>\n\n"
                     "<b>🖼 Basic Commands:</b>\n"
