@@ -1,7 +1,6 @@
 #!/bin/bash
 path_to_file=$1
 telegram_token=$2
-copy the .servcie file
 sudo cp polybot.service /etc/systemd/system/
 
 # reload daemon and restart the service

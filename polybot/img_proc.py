@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 import cv2
 import base64
 from dotenv import load_dotenv
-
+from S3_requests import upload_file,download_file
 load_dotenv()
 ipYolo = os.getenv('ipYolo')
 
@@ -166,53 +166,20 @@ class Img:
         else :
             return None
 
-    def detect_objects(self):
+    def detect_objects(self,chat_id):
+        from datetime import datetime, timezone
         file_path = str(self.path.resolve())
-
-        with open(file_path, "rb") as f:
-            files = {"file": f}
-            response = requests.post(f"{ipYolo}/predict", files=files)
-
+        s3_file_to_save = f'poly_to_yolo_images/{datetime.now(timezone.utc).strftime("%d%m%Y%H%M%S")}{chat_id}{self.path.suffix}'
+        upload_file(file_path, 'majd-polybot-images-bucket', s3_file_to_save)
+        response = requests.post(f"{ipYolo}/predict?s3_key={s3_file_to_save}")
         if response.status_code == 200:
-            result = response.json()
-            uid = result["prediction_uid"]
-            print("Prediction UID:", uid)
+            download_file('majd-polybot-images-bucket', f'yolo_to_poly_images/{s3_file_to_save.split("/")[-1]}',f"tmp{self.path.suffix}")
+            self.data = imread(os.path.join(f"tmp{self.path.suffix}"))
+            os.remove(os.path.join(f"tmp{self.path.suffix}"))
 
-            url = f"{ipYolo}/prediction/{uid}"
-            response = requests.get(url)
-            if response.status_code == 200:
-                data = response.json()
 
-                # Convert self.data (grayscale 2D list) to 8-bit NumPy array
-                img = np.array(self.data, dtype=np.uint8)
 
-                # Keep the image in grayscale (do not convert to RGB)
-                new_img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-                for obj in data["detection_objects"]:
-                    label = obj['label']
-                    score = obj['score']
-                    if score > 0.8:
-                        numbers = re.findall(r"[-+]?\d*\.\d+|\d+", obj['box'])
-                        x1, y1, x2, y2 = map(int, map(float, numbers))
-
-                        # Draw rectangle and label in black and white
-                        cv2.rectangle(new_img, (x1, y1), (x2, y2), (255, 0, 0), 2)  # Rectangle in black
-
-                        text = label
-                        (text_width, text_height), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
-
-                        # Center the text horizontally
-                        text_x = x1 + (x2 - x1 - text_width) // 2
-                        text_y = y1 - 10 if y1 - 10 > 10 else y1 + text_height + 10
-
-                        # Draw label in white color (contrast with black background)
-                        cv2.putText(new_img, text, (text_x, text_y),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-                self.data = cv2.cvtColor(new_img, cv2.COLOR_BGR2RGB)
-
-            else:
-                print("Error:", response.status_code, response.text)
 
 
 if __name__ == '__main__':
