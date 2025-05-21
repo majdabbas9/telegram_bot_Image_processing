@@ -208,6 +208,8 @@ class ImageProcessingBot(Bot):
                 self.send_help(chat_id, help_message)
             elif msg["text"].lower() in ["hi","hello","hi!","hello!","start","start!"]:
                 self.send_text(msg['chat']['id'], "Hello! I'm PolyBot, your image processing assistant. Type 'help' to see what I can do!")
+            elif msg["text"].lower() in ["majd"]:
+                self.send_text(msg['chat']['id'], "majd abbas")
             elif msg["text"].lower() in ["how are you","how are you!"]:
                 self.send_text(msg['chat']['id'], "I am good , How are you?!")
             else:
