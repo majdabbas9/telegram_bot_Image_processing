@@ -1,10 +1,11 @@
 #!/bin/bash
 path_to_file=$1
 telegram_token=$2
-
+s3_bucket_name_dev=$3
 sudo apt update && sudo apt install -y python3 python3-venv python3-pip
 sudo apt update && sudo apt install -y libgl1
 # Check if ngrok is installed
+
 if command -v ngrok &> /dev/null
 then
     echo "✅ ngrok is already installed."
@@ -28,7 +29,6 @@ else
     fi
 fi
 ngrok config add-authtoken 2wKSoZ02WAJ8woqkmFgjtmtqWxH_3h2hacC2fUcvcndDdMBzS
-
 sudo cp polybot.service /etc/systemd/system/
 
 # reload daemon and restart the service
@@ -44,6 +44,8 @@ fi
 
 env_file="$path_to_file/polybot/.env"
 echo "TELEGRAM_BOT_TOKEN=$telegram_token" > "$env_file"
+echo "S3_BUCKET_NAME=$s3_bucket_name_dev" >> "$env_file"
+
 # Check if the virtual environment exists
 if [ ! -d "$path_to_file/.venv" ]; then  # Check if .venv is a directory
     python3 -m venv "$path_to_file/.venv"
