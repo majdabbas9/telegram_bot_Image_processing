@@ -30,16 +30,16 @@ else
 fi
 
 ngrok config add-authtoken 2wKSoZ02WAJ8woqkmFgjtmtqWxH_3h2hacC2fUcvcndDdMBzS
-sudo cp polybot.service /etc/systemd/system/
+sudo cp polybot_dev.service /etc/systemd/system/
 
 # reload daemon and restart the service
 sudo systemctl daemon-reload
-sudo systemctl restart polybot.service
-sudo systemctl enable polybot.service
-sudo systemctl start polybot.service
-if ! systemctl is-active --quiet polybot.service; then
+sudo systemctl restart polybot_dev.service
+sudo systemctl enable polybot_dev.service
+sudo systemctl start polybot_dev.service
+if ! systemctl is-active --quiet polybot_dev.service; then
   echo "❌ polybot.service is not running."
-  sudo systemctl status polybot.service --no-pager
+  sudo systemctl status polybot_dev.service --no-pager
   exit 1
 fi
 
