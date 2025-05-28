@@ -4,6 +4,7 @@ telegram_token=$2
 s3_bucket_name_dev=$3
 sudo apt update && sudo apt install -y python3 python3-venv python3-pip
 sudo apt update && sudo apt install -y libgl1
+
 # Check if ngrok is installed
 if command -v ngrok &> /dev/null
 then
