@@ -27,6 +27,7 @@ else
         exit 1
     fi
 fi
+
 ngrok config add-authtoken 2wKSoZ02WAJ8woqkmFgjtmtqWxH_3h2hacC2fUcvcndDdMBzS
 sudo cp polybot.service /etc/systemd/system/
 
