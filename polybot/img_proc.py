@@ -170,7 +170,6 @@ class Img:
         from datetime import datetime, timezone
         file_path = str(self.path.resolve())
         s3_file_to_save = f'poly_to_yolo_images/{datetime.now(timezone.utc).strftime("%d%m%Y%H%M%S")}{chat_id}{self.path.suffix}'
-        print(s3_file_to_save)
         upload_file(file_path, f'{S3_bucket_name}', s3_file_to_save)
         response = requests.post(f"{ipYolo}/predict?s3_key={s3_file_to_save}")
         if response.status_code == 200:
