@@ -25,5 +25,5 @@ def webhook():
 
 
 if __name__ == "__main__":
-    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, "http://54.154.36.17")
+    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, "http://54.78.254.226")
     app.run(host='0.0.0.0', port=8443)
