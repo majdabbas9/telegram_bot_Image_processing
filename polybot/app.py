@@ -9,7 +9,7 @@ load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 BOT_APP_URL = os.getenv('BOT_APP_URL')
-MY_PUBLIC_IP = os.getenv('MY_PUBLIC_IP')
+
 
 @app.route('/', methods=['GET'])
 def index():
@@ -25,5 +25,5 @@ def webhook():
 
 
 if __name__ == "__main__":
-    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, MY_PUBLIC_IP)
+    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, "https://34.241.159.6")
     app.run(host='0.0.0.0', port=8443)
