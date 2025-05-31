@@ -42,6 +42,8 @@ jobs:
 
       - name: Execute script on EC2
         run: |
-          APP_DEV_CERT="${{ secrets.APP_DEV_CERT }}" \
-          ssh ec2 "cd $REPO_NAME && bash deploy_dev.sh ~/${REPO_NAME} ${{ secrets.TELEGRAM_TOKEN_DEV }} ${{ secrets.S3_BUCKET_DEV }}"
+           ssh ec2 "cd $REPO_NAME && \
+          APP_DEV_CERT='${{ secrets.APP_DEV_CERT }}' \
+          bash deploy_dev.sh ~/${REPO_NAME} ${{ secrets.TELEGRAM_TOKEN_DEV }} ${{ secrets.S3_BUCKET_DEV }}"
+
 
