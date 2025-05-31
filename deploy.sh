@@ -111,7 +111,7 @@ if ! systemctl is-active --quiet polybot.service; then
   sudo systemctl status polybot.service --no-pager
   exit 1
 fi
-echo "$app_cert" > polybot_cer.crt
+printf "%b" "$app_dev_cert" > polybot_cer.crt
 env_file="$path_to_file/polybot/.env"
 echo "TELEGRAM_BOT_TOKEN=$telegram_token" > "$env_file"
 echo "S3_BUCKET_NAME=$s3_bucket_name" >> "$env_file"
