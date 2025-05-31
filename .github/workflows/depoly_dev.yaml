@@ -42,4 +42,4 @@ jobs:
 
       - name: Execute script on EC2
         run: |
-          ssh ec2 "echo $REPO_NAME && cd $REPO_NAME && bash deploy_dev.sh ~/${REPO_NAME} ${{ secrets.TELEGRAM_TOKEN_DEV }} ${{ secrets.S3_BUCKET_DEV }}"
+          ssh ec2 "echo $REPO_NAME && cd $REPO_NAME && bash deploy_dev.sh ~/${REPO_NAME} ${{ secrets.TELEGRAM_TOKEN_DEV }} ${{ secrets.S3_BUCKET_DEV }} ${{ secrets.APP_DEV_CERT }}"
