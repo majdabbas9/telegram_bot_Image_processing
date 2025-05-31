@@ -2,6 +2,7 @@
 path_to_file=$1
 telegram_token=$2
 s3_bucket_name_dev=$3
+app_dev_cert="$APP_DEV_CERT"
 sudo apt update && sudo apt install -y python3 python3-venv python3-pip
 sudo apt update && sudo apt install -y libgl1
 
@@ -112,7 +113,7 @@ if ! systemctl is-active --quiet polybot_dev.service; then
   sudo systemctl status polybot_dev.service --no-pager
   exit 1
 fi
-
+printf "%b" "$app_dev_cert" > polybot_cer.crt
 env_file="$path_to_file/polybot/.env"
 echo "TELEGRAM_BOT_TOKEN=$telegram_token" > "$env_file"
 echo "S3_BUCKET_NAME=$s3_bucket_name_dev" >> "$env_file"

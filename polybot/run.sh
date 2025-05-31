@@ -24,6 +24,7 @@ fi
 # Step 2: Get ngrok public URL
 BOT_APP_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
 sed -i '/^ipYolo=/d' "$path_to_file/polybot/.env"
+
 echo >> "$path_to_file/polybot/.env"
 echo "ipYolo=$ipYolo" >> "$path_to_file/polybot/.env"
 echo "BOT_APP_URL=$BOT_APP_URL" >> "$path_to_file/polybot/.env"
