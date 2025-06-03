@@ -117,6 +117,7 @@ printf "%b" "$app_dev_cert" > polybot_cer.crt
 env_file="$path_to_file/polybot/.env"
 echo "TELEGRAM_BOT_TOKEN=$telegram_token" > "$env_file"
 echo "S3_BUCKET_NAME=$s3_bucket_name_dev" >> "$env_file"
+echo "NGINX_URL=https://majdapp.fursa.click" >> "$env_file"
 
 # Check if the virtual environment exists
 if [ ! -d "$path_to_file/.venv" ]; then  # Check if .venv is a directory
