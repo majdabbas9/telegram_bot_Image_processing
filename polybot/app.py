@@ -9,7 +9,7 @@ load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 BOT_APP_URL = os.getenv('BOT_APP_URL')
-
+Nginx_url = os.getenv('NGINX_URL')
 
 @app.route('/', methods=['GET'])
 def index():
@@ -25,5 +25,5 @@ def webhook():
 
 
 if __name__ == "__main__":
-    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, "https://majdapp.fursa.click")
+    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, Nginx_url)
     app.run(host='0.0.0.0', port=8443)
