@@ -9,5 +9,6 @@ echo "Path to file: $path_to_file"
 sed -i '/^ipYolo=/d' "$path_to_file/polybot/.env"
 echo "ipYolo=$ipYolo" >> "$path_to_file/polybot/.env"
 sleep 2
+echo "running ..."
 cd $path_to_file
 .venv/bin/python -m polybot.app
