@@ -6,7 +6,9 @@ if [ -z "$path_to_file" ] || [ -z "$ipYolo" ]; then
     exit 1
 fi
 echo "Path to file: $path_to_file"
-sed -i '/^ipYolo=/d' "$path_to_file/polybot/.env"
+if grep -q '^ipYolo=' "$path_to_file/polybot/.env"; then
+    sed -i '/^ipYolo=/d' "$path_to_file/polybot/.env"
+fi
 echo "ipYolo=$ipYolo" >> "$path_to_file/polybot/.env"
 sleep 2
 echo "running ..."
