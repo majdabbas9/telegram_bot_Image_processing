@@ -9,6 +9,7 @@ echo "Path to file: $path_to_file"
 if grep -q '^ipYolo=' "$path_to_file/polybot/.env"; then
     sed -i '/^ipYolo=/d' "$path_to_file/polybot/.env"
 fi
+sleep 2
 echo "ipYolo=$ipYolo" >> "$path_to_file/polybot/.env"
 sleep 2
 echo "running ..."
