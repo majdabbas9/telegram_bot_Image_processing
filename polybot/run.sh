@@ -7,7 +7,6 @@ if [ -z "$path_to_file" ] || [ -z "$ipYolo" ]; then
 fi
 echo "Path to file: $path_to_file"
 sed -i '/^ipYolo=/d' "$path_to_file/polybot/.env"
-echo >> "$path_to_file/polybot/.env"
 echo "ipYolo=$ipYolo" >> "$path_to_file/polybot/.env"
 sleep 2
 cd $path_to_file

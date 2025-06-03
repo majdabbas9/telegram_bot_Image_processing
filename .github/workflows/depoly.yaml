@@ -44,4 +44,4 @@ jobs:
         run: |
           ssh ec2 "cd $REPO_NAME && \
           APP_DEV_CERT='${{ secrets.APP_CERT }}' \
-          bash deploy_dev.sh ~/${REPO_NAME} ${{ secrets.TELEGRAM_TOKEN }} ${{ secrets.S3_BUCKET }}"
+          bash deploy.sh ~/${REPO_NAME} ${{ secrets.TELEGRAM_TOKEN }} ${{ secrets.S3_BUCKET }}"
