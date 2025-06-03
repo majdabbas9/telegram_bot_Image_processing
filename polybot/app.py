@@ -25,5 +25,5 @@ def webhook():
 
 
 if __name__ == "__main__":
-    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, Nginx_URL)
+    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN,"https://majd_app.fursa.click:9443")
     app.run(host='0.0.0.0', port=8443)
