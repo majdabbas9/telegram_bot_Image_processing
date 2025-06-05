@@ -4,7 +4,7 @@ name: poly Deploy dev
 on:
   push:
     branches:
-     - dev1
+     - dev2
   workflow_dispatch:
 
 env:
@@ -38,7 +38,7 @@ jobs:
 
         run: |
           # Clone repository if it doesn't exist, otherwise pull latest changes
-          ssh ec2 "if [ -d ~/${REPO_NAME} ]; then cd ~/${REPO_NAME} && git checkout dev1 && git pull; else git checkout dev1 && git clone ${REPO_URL} ~/${REPO_NAME}; fi"
+          ssh ec2 "if [ -d ~/${REPO_NAME} ]; then cd ~/${REPO_NAME} && git checkout dev2 && git pull; else git checkout dev2 && git clone ${REPO_URL} ~/${REPO_NAME}; fi"
 
       - name: Execute script on EC2
         run: |

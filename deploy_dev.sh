@@ -76,31 +76,6 @@ else
     echo "Failed to install otelcol."
 fi
 
-# Check if ngrok is installed
-if command -v ngrok &> /dev/null
-then
-    echo "✅ ngrok is already installed."
-else
-    echo "⬇️ ngrok not found. Installing now..."
-
-    # Install ngrok
-    curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
-    | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
-    && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
-    | sudo tee /etc/apt/sources.list.d/ngrok.list \
-    && sudo apt update \
-    && sudo apt install -y ngrok
-    # Recheck
-    if command -v ngrok &> /dev/null
-    then
-        echo "✅ ngrok installed successfully."
-    else
-        echo "❌ ngrok installation failed."
-        exit 1
-    fi
-fi
-
-ngrok config add-authtoken 2wKSoZ02WAJ8woqkmFgjtmtqWxH_3h2hacC2fUcvcndDdMBzS
 sudo cp polybot_dev.service /etc/systemd/system/
 
 # reload daemon and restart the service
@@ -117,8 +92,7 @@ printf "%b" "$app_dev_cert" > polybot_cer.crt
 env_file="$path_to_file/polybot/.env"
 echo "TELEGRAM_BOT_TOKEN=$telegram_token" > "$env_file"
 echo "S3_BUCKET_NAME=$s3_bucket_name_dev" >> "$env_file"
-echo "NGINX_URL=https://majdapp.fursa.click" >> "$env_file"
-
+echo "NGINX_URL=https://majddev.fursa.click" >> "$env_file"
 # Check if the virtual environment exists
 if [ ! -d "$path_to_file/.venv" ]; then  # Check if .venv is a directory
     python3 -m venv "$path_to_file/.venv"
