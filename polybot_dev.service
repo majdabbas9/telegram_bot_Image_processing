@@ -1,5 +1,5 @@
 [Unit]
-Description=polybot_dev
+Description=polybot dev
 After=network.target
 
 [Service]
@@ -15,4 +15,3 @@ StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
-
