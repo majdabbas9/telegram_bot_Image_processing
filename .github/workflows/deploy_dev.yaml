@@ -18,9 +18,9 @@ on:
 env:
   REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
   REPO_NAME: ${{ github.event.repository.name }}
-  SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-  EC2_HOST: ${{ secrets.EC2_HOST_DEV }}
-  EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+  SSH_PRIVATE_KEY: ${{ inputs.EC2_SSH_KEY }}
+  EC2_HOST: ${{ inputs.EC2_HOST_DEV }}
+  EC2_USERNAME: ${{ inputs.EC2_USERNAME }}
 jobs:
   Deploy:
     runs-on: ubuntu-latest
