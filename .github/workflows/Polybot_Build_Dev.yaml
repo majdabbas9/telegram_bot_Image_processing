@@ -5,6 +5,7 @@ on:
   push:
     branches:
      - dev3
+  workflow_dispatch:
 
 jobs:
   Build:
