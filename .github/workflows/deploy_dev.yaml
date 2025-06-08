@@ -56,8 +56,8 @@ jobs:
       - name: Copy deploy script to EC2
         run: |
           git checkout dev3
-          echo $EC2_HOST
-          echo $EC2_USERNAME
+          echo "host=$EC2_HOST"
+          echo "user=$EC2_USERNAME"
           #scp -o StrictHostKeyChecking=no deploy_dev.sh $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/
 
       - name: Copy script to EC2
