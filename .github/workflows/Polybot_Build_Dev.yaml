@@ -10,6 +10,8 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
@@ -19,22 +21,23 @@ jobs:
         run :
           echo "Building Docker image for dev3 branch"
 
-      - id: set_output
+      - id: step1
         run: |
-          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
+          echo "test=hello" >> "$GITHUB_OUTPUT"
+          # docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
           
-          img_name=${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}
+          # img_name=${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}
           
           # same docker_image to pass it to the next workflow 
-          echo "image=$img_name" >> $GITHUB_OUTPUT
+          # echo "image=$img_name" >> $GITHUB_OUTPUT
           # build & push the image 
-          #docker build --push -t $img_name  .
+          # docker build --push -t $img_name  .
 
   Deploy:
     needs: Build
     uses: ./.github/workflows/deploy_dev.yaml
     with:
-      image: 25 #${ needs.Build.outputs.image }
+      image: ${ needs.Build.outputs.output1 }
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
       EC2_HOST_DEV: ${{ secrets.EC2_HOST_DEV }}
