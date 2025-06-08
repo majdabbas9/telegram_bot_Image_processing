@@ -56,7 +56,7 @@ jobs:
       - name: Copy deploy script to EC2
         run: |
           git checkout dev3
-          scp -o StrictHostKeyChecking=no deploy_dev.sh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USERNAME }}/
+          scp deploy_dev.sh ec2:/home/${{ secrets.EC2_USERNAME }}/
 
       - name: Copy script to EC2
         run: |
