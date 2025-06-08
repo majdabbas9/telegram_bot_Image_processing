@@ -67,17 +67,17 @@ jobs:
       - name: Execute script on EC2
         run: |
           # Generate .env file. 
-             echo """
-             IMG_NAME=${{ inputs.image }}
-             TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
-             NGINX_URL=https://majddockertestdev.fursa.click
-             S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}
-             ipYolo=http://10.0.0.180:8080
-             """ > .env
+          echo """
+          IMG_NAME=${{ inputs.image }}
+          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+          NGINX_URL=https://majddockertestdev.fursa.click
+          S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}
+          ipYolo=http://10.0.0.180:8080
+          """ > .env
 
-             #printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
-          
-             #docker compose -f docker-compose.dev.yaml up -d
+          printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
+      
+          #docker compose -f docker-compose.dev.yaml up -d
           
 
 
