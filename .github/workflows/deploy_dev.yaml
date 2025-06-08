@@ -67,7 +67,7 @@ jobs:
 
       - name: Execute script on EC2
         run: |
-          # Generate .env file
+          # Generate .env file ...
           echo ${{ inputs.image }}
           
           
