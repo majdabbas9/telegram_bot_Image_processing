@@ -53,10 +53,13 @@ jobs:
               IdentityFile ~/.ssh/private_key
               StrictHostKeyChecking no
           EOF
+      - name: Copy deploy script to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no deploy_docker.sh ec2:/home/$EC2_USERNAME/deploy_docker.sh
 
       - name: Copy script to EC2
         run: |
-          ssh ec2 "bash deploy_docker.sh"
+          ssh ec2 "chmod +x /home/$EC2_USERNAME/deploy_docker.sh && bash /home/$EC2_USERNAME/deploy_docker.sh
 
       - name: Execute script on EC2
         run: |
@@ -69,9 +72,9 @@ jobs:
              ipYolo=http://10.0.0.180:8080
              """ > .env
 
-             # run the container using docker compose
-             # vars from .env could be read in the docker-compose file using ${IMG_NAME} syntax.
-             # docker compose -f docker-compose.dev.yaml up -d
+             printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
+          
+             docker compose -f docker-compose.dev.yaml up -d
           
 
 

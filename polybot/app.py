@@ -2,10 +2,10 @@ import flask
 from flask import request
 import os
 from polybot.bot import Bot, QuoteBot, ImageProcessingBot
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 app = flask.Flask(__name__)
-load_dotenv()
+#load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 BOT_APP_URL = os.getenv('BOT_APP_URL')
