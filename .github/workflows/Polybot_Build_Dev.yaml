@@ -33,7 +33,7 @@ jobs:
     needs: Build
     uses: ./.github/workflows/deploy_dev.yaml
     with:
-      image: ${{ steps.Build.outputs.image_name }}
+      image: ${ steps.Build.outputs.image_name }
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
       EC2_HOST_DEV: ${{ secrets.EC2_HOST_DEV }}
