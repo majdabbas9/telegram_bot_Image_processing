@@ -35,7 +35,6 @@ jobs:
           EOF
 
       - name: Copy script to EC2
-
         run: |
           # Clone repository if it doesn't exist, otherwise pull latest changes
           ssh ec2 "if [ -d ~/${REPO_NAME} ]; then \
