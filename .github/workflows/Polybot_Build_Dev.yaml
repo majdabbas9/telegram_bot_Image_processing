@@ -28,6 +28,6 @@ jobs:
 
   Deploy:
     needs: Build
-    uses: .github/workflows/deploy_dev.yaml
+    uses: ./.github/workflows/deploy_dev.yaml
     with:
       image: ${ steps.Build.outputs.image }
