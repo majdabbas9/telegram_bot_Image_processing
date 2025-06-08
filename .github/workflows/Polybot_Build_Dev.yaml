@@ -21,7 +21,9 @@ jobs:
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
           REPO_NAME: ${{ github.event.repository.name }}
+
        run: |
+         echo EC2_HOST
          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
          
          img_name=${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}
