@@ -11,29 +11,32 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     outputs:
-      image_name: ${{ steps.set_output.outputs.image_name }}
+      image_name: ${{ steps.set_output.outputs.image }}
     steps:
-     - uses: actions/checkout@v4
-     - name: Build Docker image
-       env:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run :
+          echo "Building Docker image for dev3 branch"
 
-       run: |
-         docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-         
-         img_name=${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}
-         
-         # same docker_image to pass it to the next workflow 
-         echo "image=$img_name" >> $GITHUB_OUTPUT
-         # build & push the image 
-         #docker build --push -t $img_name  .
+      - id: set_output
+        run: |
+          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
+          
+          img_name=${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}
+          
+          # same docker_image to pass it to the next workflow 
+          echo "image=$img_name" >> $GITHUB_OUTPUT
+          # build & push the image 
+          #docker build --push -t $img_name  .
 
   Deploy:
     needs: Build
     uses: ./.github/workflows/deploy_dev.yaml
     with:
-      image: ${{ steps.Build.outputs.image_name }}
+      image: ${ steps.Build.outputs.image_name }
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
       EC2_HOST_DEV: ${{ secrets.EC2_HOST_DEV }}
