@@ -19,4 +19,4 @@ COPY . .
 RUN pip install --upgrade pip && pip install -r /app/polybot/requirements.txt
 EXPOSE 5004
 # Default command to run the bot
-CMD ["python", "/app/app_test.py"]
+CMD ["python3", "-m", "polybot.app"]

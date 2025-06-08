@@ -3,9 +3,9 @@ from matplotlib.image import imread, imsave
 import re
 import requests
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from S3_requests import upload_file,download_file
-load_dotenv()
+#load_dotenv()
 ipYolo = os.getenv('ipYolo')
 S3_bucket_name = os.getenv('S3_BUCKET_NAME')
 def rgb2gray(rgb):
