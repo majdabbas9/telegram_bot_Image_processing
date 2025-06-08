@@ -55,7 +55,7 @@ jobs:
           EOF
       - name: Copy deploy script to EC2
         run: |
-          scp -o StrictHostKeyChecking=no deploy_docker.sh ec2:/home/$EC2_USERNAME/deploy_docker.sh
+          scp -o StrictHostKeyChecking=no deploy_docker.sh $EC2_USERNAME@ec2:/home/$EC2_USERNAME/deploy_docker.sh
 
       - name: Copy script to EC2
         run: |
@@ -72,9 +72,9 @@ jobs:
              ipYolo=http://10.0.0.180:8080
              """ > .env
 
-             printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
+             #printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
           
-             docker compose -f docker-compose.dev.yaml up -d
+             #docker compose -f docker-compose.dev.yaml up -d
           
 
 
