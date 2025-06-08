@@ -78,5 +78,5 @@ jobs:
 
           printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
           
-          ssh ec2 "docker compose -f docker-compose.dev.yaml up -d"
+          ssh ec2 "sudo docker compose -f docker-compose.dev.yaml up -d"
 
