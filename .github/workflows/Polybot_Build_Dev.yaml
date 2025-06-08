@@ -24,7 +24,7 @@ jobs:
          
          # same docker_image to pass it to the next workflow 
          echo "image=$img_name" >> $GITHUB_OUTPUT
-         echo "what_is_that=$needs.Build.outputs.image_name"
+         echo "what_is_that=${{ needs.Build.outputs.image_name }}"
          # build & push the image 
          #docker build --push -t $img_name  .
 
