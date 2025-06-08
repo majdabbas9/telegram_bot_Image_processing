@@ -17,6 +17,6 @@ RUN apt-get update && apt-get install -y \
 COPY . .
 
 RUN pip install --upgrade pip && pip install -r polybot/requirements.txt
-
+EXPOSE 5004
 # Default command to run the bot
-CMD ["python", "-m", "polybot.app"]
+CMD ["python", "polybot.app_test"]

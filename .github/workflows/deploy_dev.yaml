@@ -56,17 +56,22 @@ jobs:
 
       - name: Copy script to EC2
         run: |
-          # Clone repository if it doesn't exist, otherwise pull latest changes
-          ssh ec2 "if [ -d ~/${REPO_NAME} ]; then \
-          cd ~/${REPO_NAME} && git checkout dev3 && git pull; \
-          else \
-          git clone --branch dev3 ${REPO_URL} ~/${REPO_NAME}; \
-          fi"
+          ssh ec2 "bash deploy_docker.sh"
 
       - name: Execute script on EC2
         run: |
-          ssh ec2 "cd $REPO_NAME && \
-          APP_DEV_CERT='${{ secrets.APP_DEV_CERT }}' \
-          bash deploy_dev.sh ~/${REPO_NAME} ${{ secrets.TELEGRAM_TOKEN_DEV }} ${{ secrets.S3_BUCKET_DEV }}"
+          # Generate .env file. 
+             echo """
+             IMG_NAME=${{ inputs.image }}
+             TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+             NGINX_URL=https://majddockertestdev.fursa.click
+             S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}
+             ipYolo=http://10.0.0.180:8080
+             """ > .env
+
+             # run the container using docker compose
+             # vars from .env could be read in the docker-compose file using ${IMG_NAME} syntax.
+             # docker compose -f docker-compose.dev.yaml up -d
+          
 
 

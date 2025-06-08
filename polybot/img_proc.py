@@ -3,12 +3,6 @@ from matplotlib.image import imread, imsave
 import re
 import requests
 import os
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.patches import Rectangle
-from PIL import Image, ImageDraw, ImageFont
-import cv2
-import base64
 from dotenv import load_dotenv
 from S3_requests import upload_file,download_file
 load_dotenv()
