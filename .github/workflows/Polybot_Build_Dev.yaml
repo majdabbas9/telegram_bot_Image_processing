@@ -28,7 +28,8 @@ jobs:
           img_name=${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}
           
           # same docker_image to pass it to the next workflow 
-          echo "image=$img_name" >> "$GITHUB_OUTPUT"
+          # echo "image=$img_name" >> "$GITHUB_OUTPUT"
+          echo "image=5" >> "$GITHUB_OUTPUT"
           # build & push the image 
           # docker build --push -t $img_name  .
 
