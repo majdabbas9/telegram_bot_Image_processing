@@ -55,7 +55,7 @@ jobs:
           EOF
       - name: Copy deploy script to EC2
         run: |
-          scp -o StrictHostKeyChecking=no deploy_docker.sh $EC2_USERNAME@ec2:/home/$EC2_USERNAME/deploy_docker.sh
+          scp -o StrictHostKeyChecking=no deploy_docker.sh $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/deploy_docker.sh
 
       - name: Copy script to EC2
         run: |
