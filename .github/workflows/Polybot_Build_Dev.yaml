@@ -16,19 +16,15 @@ jobs:
        env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          EC2_HOST: ${{ secrets.EC2_HOST_DEV }}
-          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
 
        run: |
-         echo $EC2_HOST
          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
          
          img_name=${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}
          
          # same docker_image to pass it to the next workflow 
          echo "image=$img_name" >> $GITHUB_OUTPUT
-         echo ${ steps.Build.outputs.image } 
+         echo $GITHUB_OUTPUT
          # build & push the image 
          #docker build --push -t $img_name  .
 
