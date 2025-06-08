@@ -10,8 +10,6 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
-    outputs:
-      image_name: ${{ steps.set_output.outputs.image }}
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
@@ -36,7 +34,7 @@ jobs:
     needs: Build
     uses: ./.github/workflows/deploy_dev.yaml
     with:
-      image: ${ needs.Build.outputs.image_name }
+      image: ${ needs.Build.outputs.image }
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
       EC2_HOST_DEV: ${{ secrets.EC2_HOST_DEV }}
