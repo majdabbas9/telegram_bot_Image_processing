@@ -60,6 +60,7 @@ jobs:
 
       - name: Copy script to EC2
         run: |
+          git checkout dev3
           ssh ec2 "chmod +x /home/${{ secrets.EC2_USERNAME }}/deploy_docker.sh && bash /home/${{ secrets.EC2_USERNAME }}/deploy_docker.sh
 
       - name: Execute script on EC2
