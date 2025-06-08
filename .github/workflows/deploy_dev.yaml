@@ -69,7 +69,7 @@ jobs:
         run: |
           echo """
           IMG_NAME=${{ steps.Build.outputs.image }}
-          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN_DEV }}
           NGINX_URL=https://majddockertestdev.fursa.click
           S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}
           ipYolo=http://10.0.0.180:8080
