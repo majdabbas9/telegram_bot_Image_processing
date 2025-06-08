@@ -58,6 +58,7 @@ jobs:
         run: |
           git checkout dev3
           scp deploy_docker.sh ec2:/home/${{ secrets.EC2_USERNAME }}/
+          scp docker-compose.dev.yaml ec2:/home/${{ secrets.EC2_USERNAME }}/
 
       - name: Copy script to EC2
         run: |
@@ -78,5 +79,5 @@ jobs:
           printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
           
           cat .env
-          docker compose -f docker-compose.dev.yaml up -d
+          sudo docker compose -f docker-compose.dev.yaml up -d
 
