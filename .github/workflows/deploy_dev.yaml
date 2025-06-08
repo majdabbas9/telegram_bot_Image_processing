@@ -67,12 +67,5 @@ jobs:
 
       - name: Execute script on EC2
         run: |
-          # Generate .env file with the passed image name
-          echo "IMAGE_NAME=${{ inputs.image }}" > .env
-          # Add other environment variables if needed
-          echo "OTHER_VAR=value" >> .env
-          # Now you can use the .env file in your deployment
-          cat .env
-          # Your deployment commands here...
-
+          echo ${{ inputs.image }}
 
