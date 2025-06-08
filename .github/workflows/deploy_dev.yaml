@@ -78,5 +78,5 @@ jobs:
           printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
           
           cat .env
-          #docker compose -f docker-compose.dev.yaml up -d
+          docker compose -f docker-compose.dev.yaml up -d
 
