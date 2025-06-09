@@ -17,6 +17,6 @@ RUN apt-get update && apt-get install -y \
 COPY . .
 
 RUN pip install --upgrade pip && pip install -r /app/polybot/requirements.txt
-EXPOSE 5004
+EXPOSE 8443
 # Default command to run the bot
 CMD ["python3", "-m", "polybot.app"]

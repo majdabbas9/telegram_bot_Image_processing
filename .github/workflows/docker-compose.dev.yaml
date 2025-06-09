@@ -9,4 +9,4 @@ services:
     ports:
       - "8443:8443"
     volumes:
-      - ./polybot_cer.crt:/app/polybot_cer.crt
+      - /home/ubuntu/polybot_cer.crt:/app/polybot_cer.crt
