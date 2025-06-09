@@ -24,12 +24,11 @@ jobs:
 
       - id: step1
         run: |
-          docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
           
-          img_name=$DOCKER_USERNAME/polybot_build_dev:${{github.run_number}}
+          img_name=${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}
           
-          # same docker_image to pass it to the next workflow
-          echo $img_name
+          # same docker_image to pass it to the next workflow 
           echo "image=$img_name" >> "$GITHUB_OUTPUT"
           # build & push the image 
           docker build --push -t $img_name  .
