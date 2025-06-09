@@ -27,9 +27,10 @@ jobs:
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
           
           img_name="majdabbas99/polybot_build_dev:${{github.run_number}}"
+          img_name1="/polybot_build_dev:${{github.run_number}}"
           # same docker_image to pass it to the next workflow 
-          echo "image=$img_name" >> "$GITHUB_OUTPUT"
-          echo "Building Docker image: $img_name"
+          echo "image=$img_name1" >> "$GITHUB_OUTPUT"
+          echo "Building Docker image: $img_name1"
           # build & push the image 
           # docker build --push -t $img_name  .
 
