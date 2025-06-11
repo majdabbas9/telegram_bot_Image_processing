@@ -29,7 +29,7 @@ jobs:
           echo "image=$img_name" >> "$GITHUB_OUTPUT"
           echo "Building Docker image: ${{ secrets.DOCKERHUB_USERNAME }}$img_name"
           # build & push the image 
-          # docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name"  .
+          docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name"  .
 
   Deploy:
     needs: Build
