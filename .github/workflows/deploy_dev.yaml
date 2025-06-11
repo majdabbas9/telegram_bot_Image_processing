@@ -21,6 +21,8 @@ on:
         required: true
       S3_BUCKET_DEV:
         required: true
+      DOCKER_USERNAME:
+        required: true
   workflow_dispatch:
     inputs:
       image:
