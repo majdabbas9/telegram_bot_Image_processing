@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  polybot_dev:
+  polybot:
     image: "${IMG_NAME}"
     restart: unless-stopped
     env_file:

@@ -1,5 +1,5 @@
 # The name of the workflow
-name: poly Deploy dev
+name: poly Deploy prod
 
 on:
   workflow_call:
@@ -11,15 +11,15 @@ on:
     secrets:
       EC2_SSH_KEY:
         required: true
-      EC2_HOST_DEV:
+      EC2_HOST:
         required: true
       EC2_USERNAME:
         required: true
-      APP_DEV_CERT:
+      APP_CERT:
         required: true
-      TELEGRAM_TOKEN_DEV:
+      TELEGRAM_TOKEN:
         required: true
-      S3_BUCKET_DEV:
+      S3_BUCKET:
         required: true
       DOCKER_USERNAME:
         required: true
@@ -43,7 +43,7 @@ jobs:
       - name: Configure SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          EC2_HOST: ${{ secrets.EC2_HOST_DEV }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
         run: |
           mkdir -p ~/.ssh
@@ -58,14 +58,12 @@ jobs:
           EOF
       - name: Copy deploy script to EC2
         run: |
-          git checkout dev3
           scp download_docker.sh ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp docker-compose-files/docker-compose.polybot.yaml ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp docker-compose-files/otelcol-config.yaml ec2:/home/${{ secrets.EC2_USERNAME }}/
 
       - name: Copy script to EC2
         run: |
-          git checkout dev3
           EC2_USERNAME=${{ secrets.EC2_USERNAME }}
           ssh ec2 "chmod +x /home/$EC2_USERNAME/download_docker.sh && bash /home/$EC2_USERNAME/download_docker.sh"
 
@@ -74,12 +72,12 @@ jobs:
           echo ${{ secrets.DOCKERHUB_USERNAME }}
           echo """
           IMG_NAME=majdabbas99${{ inputs.image }}
-          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN_DEV }}
-          NGINX_URL=https://majddockertestdev.fursa.click
-          S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}
-          ipYolo=http://10.0.0.180:8080
+          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
+          NGINX_URL=https://majddockertestprod.fursa.click
+          S3_BUCKET_NAME=${{ secrets.S3_BUCKET }}
+          ipYolo=http://10.0.1.43:8080
           """ > .env
-          printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
+          printf '%s\n' '${{ secrets.APP_CERT }}' > polybot_cer.crt
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
           # Extract image base name and current tag
