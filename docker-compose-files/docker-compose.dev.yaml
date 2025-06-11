@@ -10,3 +10,11 @@ services:
       - "8443:8443"
     volumes:
       - /home/ubuntu/polybot_cer.crt:/app/polybot_cer.crt
+  otelcol:
+    image: otel/opentelemetry-collector:latest
+    restart: unless-stopped
+    command: [ "--config=/etc/otelcol/config.yaml" ]
+    ports:
+      - "8889:8889"
+    volumes:
+      - ./otelcol-config.yaml:/etc/otelcol/config.yaml:ro
