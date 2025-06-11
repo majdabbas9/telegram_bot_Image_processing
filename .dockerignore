@@ -10,3 +10,5 @@ __pycache__/
 .github
 LICENSE
 README.md
+__pycache__
+download_docker.sh
