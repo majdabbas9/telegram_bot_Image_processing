@@ -72,7 +72,7 @@ jobs:
         run: |
           echo ${{ secrets.DOCKERHUB_USERNAME }}
           echo """
-          IMG_NAME=${{ secrets.DOCKERHUB_USERNAME }}${{ inputs.image }}
+          IMG_NAME=majdabbas99${{ inputs.image }}
           TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN_DEV }}
           NGINX_URL=https://majddockertestdev.fursa.click
           S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}
