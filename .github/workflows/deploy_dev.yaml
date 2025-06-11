@@ -86,18 +86,20 @@ jobs:
           # Extract image base name and current tag
           IMG_FULL="majdabbas99${{ inputs.image }}"   # e.g., majdabbas99/polybot:latest
           IMG_BASE=$(echo "$IMG_FULL" | cut -d':' -f1)
-          ssh ec2 <<EOF
-          # Get all image IDs that match the given image name
-          image_ids=$(sudo docker images --format "{{.Repository}} {{.Tag}} {{.ID}}" | grep "^$IMG_BASE | awk '{print $3}' | sort | uniq)
-          # Check if any images were found
-          if [ -z "$image_ids" ]; then
-            echo "No images found for $IMG_BASE"
+          ssh ec2 "
+        
+          image_ids=\$(sudo docker images --format '{{.Repository}} {{.Tag}} {{.ID}}' | grep \"^\$IMG_BASE \" | awk '{print \$3}' | sort | uniq)
+        
+          if [ -z \"\$image_ids\" ]; then
+            echo 'No images found for \$IMG_BASE'
             exit 0
           fi
-          # Loop and remove each image ID
-          for id in $image_ids; do
-            echo "Removing image ID: $id"
-            sudo docker rmi -f "$id"
+        
+          for id in \$image_ids; do
+            echo 'Removing image ID: '\$id
+            sudo docker rmi -f \"\$id\"
+          done
+        
           sudo docker compose -f docker-compose.dev.yaml down
-          sudo docker compose -f docker-compose.dev.yaml up -d
+          sudo docker compose -f docker-compose.dev.yaml up -d"
 
