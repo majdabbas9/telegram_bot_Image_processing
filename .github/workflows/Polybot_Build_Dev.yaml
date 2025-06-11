@@ -33,15 +33,17 @@ jobs:
 
   Deploy:
     needs: Build
-    uses: ./.github/workflows/deploy_dev.yaml
+    uses: ./.github/workflows/deploy_polybot.yaml
     with:
       image: ${{needs.Build.outputs.output1}}
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-      EC2_HOST_DEV: ${{ secrets.EC2_HOST_DEV }}
+      EC2_HOST: ${{ secrets.EC2_HOST_DEV }}
       EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
-      APP_DEV_CERT: ${{ secrets.APP_DEV_CERT }}
-      TELEGRAM_TOKEN_DEV: ${{ secrets.TELEGRAM_TOKEN_DEV }}
-      S3_BUCKET_DEV: ${{ secrets.S3_BUCKET_DEV }}
+      APP_CERT: ${{ secrets.APP_DEV_CERT }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET_DEV }}
       DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      APP_NGINX_URL: ${{ secrets.APP_DEV_NGINX_URL }}
+      APP_YOLO_IP: ${{ secrets.APP_DEV_YOLO_IP }}
 

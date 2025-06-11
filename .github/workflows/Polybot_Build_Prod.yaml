@@ -33,7 +33,7 @@ jobs:
 
   Deploy:
     needs: Build
-    uses: ./.github/workflows/deploy_prod.yaml
+    uses: ./.github/workflows/deploy_polybot.yaml
     with:
       image: ${{needs.Build.outputs.output1}}
     secrets:
@@ -44,4 +44,6 @@ jobs:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
       S3_BUCKET: ${{ secrets.S3_BUCKET }}
       DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      APP_NGINX_URL : ${{ secrets.APP_NGINX_URL }}
+      APP_YOLO_IP : ${{ secrets.APP_YOLO_IP }}
 
