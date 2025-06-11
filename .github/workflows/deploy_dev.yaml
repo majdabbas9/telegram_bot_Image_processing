@@ -84,11 +84,10 @@ jobs:
           # Extract image base name and current tag
           IMG_FULL="majdabbas99${{ inputs.image }}"
           IMG_BASE=$(echo "$IMG_FULL" | cut -d':' -f1)
-          IMG_TAG=$(echo "$IMG_FULL" | cut -d':' -f2)
           
           ssh ec2 "
             echo 'Removing old images for $IMG_BASE (except tag $IMG_TAG)...'
-            docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep \"^$IMG_BASE:\" | grep -v \":$IMG_TAG\" | awk '{print \$2}' | xargs -r docker rmi -f
+            docker images $IMG_BASE --format "{{.ID}}" | xargs -r docker rmi
             sudo docker compose -f docker-compose.dev.yaml down &&
             sudo docker compose -f docker-compose.dev.yaml up -d
           "
