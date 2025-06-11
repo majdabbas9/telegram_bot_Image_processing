@@ -85,19 +85,19 @@ jobs:
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
           # Extract image base name and current tag
           IMG_FULL="majdabbas99${{ inputs.image }}"   # e.g., majdabbas99/polybot:latest
-          IMG_BASE=$(echo "$IMG_FULL" | cut -d':' -f1)  # e.g., majdabbas99/polybot
+          IMG_BASE=$(echo "$IMG_FULL" | cut -d':' -f1)
           ssh ec2 <<EOF
-          echo "Removing old images for $IMG_BASE (except $IMG_FULL)..."
-        
-          KEEP_ID=\$(sudo docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep "^$IMG_FULL " | awk '{print \$2}')
-        
-          sudo docker images $IMG_BASE --format '{{.Repository}}:{{.Tag}} {{.ID}}' \\
-            | grep -v "^$IMG_FULL " \\
-            | awk '{print \$2}' \\
-            | grep -v "\$KEEP_ID" \\
-            | xargs -r sudo docker rmi
-        
-          echo "Restarting Docker Compose..."
+          # Get all image IDs that match the given image name
+          image_ids=$(sudo docker images --format "{{.Repository}} {{.Tag}} {{.ID}}" | grep "^$IMG_BASE | awk '{print $3}' | sort | uniq)
+          # Check if any images were found
+          if [ -z "$image_ids" ]; then
+            echo "No images found for $IMG_BASE"
+            exit 0
+          fi
+          # Loop and remove each image ID
+          for id in $image_ids; do
+            echo "Removing image ID: $id"
+            sudo docker rmi -f "$id"
           sudo docker compose -f docker-compose.dev.yaml down
           sudo docker compose -f docker-compose.dev.yaml up -d
 
