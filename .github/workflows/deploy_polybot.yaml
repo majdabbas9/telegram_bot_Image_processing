@@ -23,6 +23,10 @@ on:
         required: true
       DOCKER_USERNAME:
         required: true
+      APP_NGINX_URL:
+        required: true
+      APP_YOLO_IP:
+        required: true
   workflow_dispatch:
     inputs:
       image:
@@ -73,9 +77,9 @@ jobs:
           echo """
           IMG_NAME=majdabbas99${{ inputs.image }}
           TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
-          NGINX_URL=https://majddockertestprod.fursa.click
+          NGINX_URL=${{ secrets.APP_NGINX_URL }}
           S3_BUCKET_NAME=${{ secrets.S3_BUCKET }}
-          ipYolo=http://10.0.1.43:8080
+          ipYolo=${{ secrets.APP_YOLO_IP }}
           """ > .env
           printf '%s\n' '${{ secrets.APP_CERT }}' > polybot_cer.crt
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
