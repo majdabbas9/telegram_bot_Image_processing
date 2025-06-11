@@ -70,6 +70,7 @@ jobs:
 
       - name: Execute script on EC2
         run: |
+          echo ${{ secrets.DOCKERHUB_USERNAME }}
           echo """
           IMG_NAME=${{ secrets.DOCKERHUB_USERNAME }}${{ inputs.image }}
           TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN_DEV }}
