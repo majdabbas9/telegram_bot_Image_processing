@@ -89,13 +89,13 @@ jobs:
           ssh ec2 <<EOF
           echo "Removing old images for $IMG_BASE (except $IMG_FULL)..."
         
-          KEEP_ID=\$(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep "^$IMG_FULL " | awk '{print \$2}')
+          KEEP_ID=\$(sudo docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep "^$IMG_FULL " | awk '{print \$2}')
         
-          docker images $IMG_BASE --format '{{.Repository}}:{{.Tag}} {{.ID}}' \\
+          sudo docker images $IMG_BASE --format '{{.Repository}}:{{.Tag}} {{.ID}}' \\
             | grep -v "^$IMG_FULL " \\
             | awk '{print \$2}' \\
             | grep -v "\$KEEP_ID" \\
-            | xargs -r docker rmi
+            | xargs -r sudo docker rmi
         
           echo "Restarting Docker Compose..."
           docker compose -f docker-compose.dev.yaml down
