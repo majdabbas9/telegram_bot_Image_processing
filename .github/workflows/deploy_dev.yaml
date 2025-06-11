@@ -69,7 +69,7 @@ jobs:
       - name: Execute script on EC2
         run: |
           echo """
-          IMG_NAME="majdabbas99${{ inputs.image }}"
+          IMG_NAME=${{ inputs.image }}
           TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN_DEV }}
           NGINX_URL=https://majddockertestdev.fursa.click
           S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}

@@ -26,10 +26,10 @@ jobs:
         run: |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
           
-          img_name="majdabbas99/polybot_build_dev:${{github.run_number}}"
-          img_name1="/polybot_build_dev:${{github.run_number}}"
+          img_name="${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}"
+          # img_name1="/polybot_build_dev:${{github.run_number}}"
           # same docker_image to pass it to the next workflow 
-          echo "image=$img_name1" >> "$GITHUB_OUTPUT"
+          echo "image=$img_name" >> "$GITHUB_OUTPUT"
           echo "Building Docker image: $img_name1"
           # build & push the image 
           docker build --push -t $img_name  .
@@ -46,4 +46,6 @@ jobs:
       APP_DEV_CERT: ${{ secrets.APP_DEV_CERT }}
       TELEGRAM_TOKEN_DEV: ${{ secrets.TELEGRAM_TOKEN_DEV }}
       S3_BUCKET_DEV: ${{ secrets.S3_BUCKET_DEV }}
+      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
 
