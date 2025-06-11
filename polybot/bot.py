@@ -19,7 +19,7 @@ class Bot:
         self.telegram_bot_client.remove_webhook()
         time.sleep(0.5)
         # set the webhook URL
-        if not test_mode :
+        if not test_mode:
             self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60 , certificate=open("/app/polybot_cer.crt", 'r'))
         else:
             self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60)
