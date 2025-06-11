@@ -71,7 +71,7 @@ jobs:
       - name: Execute script on EC2
         run: |
           echo """
-          IMG_NAME=${{ inputs.image }}
+          IMG_NAME=${{ secrets.DOCKERHUB_USERNAME }}${{ inputs.image }}
           TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN_DEV }}
           NGINX_URL=https://majddockertestdev.fursa.click
           S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}
@@ -81,5 +81,5 @@ jobs:
           printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
-          ssh ec2 "sudo docker compose -f docker-compose.dev.yaml up -d"
+          # ssh ec2 "sudo docker compose -f docker-compose.dev.yaml up -d"
 
