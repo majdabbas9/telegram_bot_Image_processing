@@ -84,21 +84,5 @@ jobs:
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
           # Extract image base name and current tag
-          ssh ec2 "
-          IMG_FULL=$(grep '^IMG_NAME=' .env | cut -d '=' -f2-)
-          IMG_BASE="$(echo "$IMG_FULL" | cut -d':' -f1)"
-          
-          image_ids=\$(sudo docker images --format '{{.Repository}} {{.Tag}} {{.ID}}' | grep \"^\$IMG_BASE \" | awk '{print \$3}' | sort | uniq)
-        
-          if [ -z \"\$image_ids\" ]; then
-            echo 'No images found for \$IMG_BASE'
-            exit 0
-          fi
-        
-          for id in \$image_ids; do
-            echo 'Removing image ID: '\$id
-            sudo docker rmi -f \"\$id\"
-        
-          sudo docker compose -f docker-compose.dev.yaml down
-          sudo docker compose -f docker-compose.dev.yaml up -d"
+          ssh ec2 "sudo docker compose -f docker-compose.dev.yaml down && sudo docker compose -f docker-compose.dev.yaml up -d"
 
