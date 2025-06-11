@@ -16,9 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
-#        env:
-#          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-#          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
         run :
           echo "Building Docker image for dev3 branch"
 
