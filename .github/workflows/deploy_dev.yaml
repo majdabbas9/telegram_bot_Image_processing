@@ -88,7 +88,7 @@ jobs:
           
           ssh ec2 "
             echo 'Removing old images for $IMG_BASE (except tag $IMG_TAG)...'
-            docker images $IMG_BASE --format "{{.ID}}" | xargs -r docker rmi
+            sudo docker images $IMG_BASE --format "{{.ID}}" | xargs -r docker rmi
             sudo docker compose -f docker-compose.dev.yaml down &&
             sudo docker compose -f docker-compose.dev.yaml up -d
           "
