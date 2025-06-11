@@ -98,6 +98,6 @@ jobs:
             | xargs -r sudo docker rmi
         
           echo "Restarting Docker Compose..."
-          docker compose -f docker-compose.dev.yaml down
-          docker compose -f docker-compose.dev.yaml up -d
+          sudo docker compose -f docker-compose.dev.yaml down
+          sudo docker compose -f docker-compose.dev.yaml up -d
 
