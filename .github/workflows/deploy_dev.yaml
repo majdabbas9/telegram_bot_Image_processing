@@ -98,7 +98,6 @@ jobs:
           for id in \$image_ids; do
             echo 'Removing image ID: '\$id
             sudo docker rmi -f \"\$id\"
-          done
         
           sudo docker compose -f docker-compose.dev.yaml down
           sudo docker compose -f docker-compose.dev.yaml up -d"
