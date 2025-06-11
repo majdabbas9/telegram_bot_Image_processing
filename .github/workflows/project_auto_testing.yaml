@@ -15,9 +15,6 @@ jobs:
   TestImgProcessingChatbotApp:
     runs-on: ubuntu-latest
 
-    env:
-      CERT_CONTENT: ${{ github.ref_name == 'dev3' && secrets.APP_DEV_CERT || secrets.APP_CERT }}
-
     steps:
       - uses: actions/checkout@v2
 
