@@ -79,7 +79,6 @@ jobs:
           S3_BUCKET_NAME=${{ secrets.S3_BUCKET_DEV }}
           ipYolo=http://10.0.0.180:8080
           """ > .env
-          
           printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
