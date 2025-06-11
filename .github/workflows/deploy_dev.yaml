@@ -81,5 +81,15 @@ jobs:
           printf '%s\n' '${{ secrets.APP_DEV_CERT }}' > polybot_cer.crt
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
-          ssh ec2 "sudo docker compose -f docker-compose.dev.yaml down && sudo docker compose -f docker-compose.dev.yaml up -d"
+          # Extract image base name and current tag
+          IMG_FULL="majdabbas99${{ inputs.image }}"
+          IMG_BASE=$(echo "$IMG_FULL" | cut -d':' -f1)
+          IMG_TAG=$(echo "$IMG_FULL" | cut -d':' -f2)
+          
+          ssh ec2 "
+            echo 'Removing old images for $IMG_BASE (except tag $IMG_TAG)...'
+            docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep \"^$IMG_BASE:\" | grep -v \":$IMG_TAG\" | awk '{print \$2}' | xargs -r docker rmi -f
+            sudo docker compose -f docker-compose.dev.yaml down &&
+            sudo docker compose -f docker-compose.dev.yaml up -d
+          "
 
