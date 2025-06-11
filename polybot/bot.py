@@ -10,16 +10,19 @@ import re
 import requests
 class Bot:
 
-    def __init__(self, token, telegram_chat_url):
+    def __init__(self, token, telegram_chat_url,test_mode=False):
         # create a new instance of the TeleBot class.
         # all communication with Telegram servers are done using self.telegram_bot_client
         self.telegram_bot_client = telebot.TeleBot(token)
 
         # remove any existing webhooks configured in Telegram servers
         self.telegram_bot_client.remove_webhook()
-        time.sleep(0.5)
+        time.sleep(1.5)  # wait for the webhook to be removed
         # set the webhook URL
-        self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60 , certificate=open("/app/polybot_cer.crt", 'r'))
+        if not test_mode:
+            self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60 , certificate=open("/app/polybot_cer.crt", 'r'))
+        else:
+            self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60)
 
         logger.info(f'Telegram Bot information\n\n{self.telegram_bot_client.get_me()}')
 

@@ -65,6 +65,7 @@ jobs:
           scp download_docker.sh ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp docker-compose-files/docker-compose.polybot.yaml ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp docker-compose-files/otelcol-config.yaml ec2:/home/${{ secrets.EC2_USERNAME }}/
+          scp containerize.sh ec2:/home/${{ secrets.EC2_USERNAME }}/
 
       - name: Copy script to EC2
         run: |
@@ -85,5 +86,6 @@ jobs:
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
           # Extract image base name and current tag
-          ssh ec2 "sudo docker compose -f docker-compose.polybot.yaml down && sudo docker compose -f docker-compose.polybot.yaml up -d"
+          ssh ec2
+          ssh ec2 "bash /home/${{ secrets.EC2_USERNAME }}/containerize.sh $IMG_NAME"
 
