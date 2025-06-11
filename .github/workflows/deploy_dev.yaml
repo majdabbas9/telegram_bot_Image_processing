@@ -84,12 +84,19 @@ jobs:
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
           # Extract image base name and current tag
-          IMG_FULL="majdabbas99${{ inputs.image }}"
-          IMG_BASE=$(echo "$IMG_FULL" | cut -d':' -f1)
-          
+          IMG_FULL="majdabbas99${{ inputs.image }}"   # e.g., majdabbas99/polybot:latest
+          IMG_BASE=$(echo "$IMG_FULL" | cut -d':' -f1)  # e.g., majdabbas99/polybot
           ssh ec2 "
-            echo 'Removing old images for $IMG_BASE (except tag $IMG_TAG)...'
-            sudo docker images $IMG_BASE --format "{{.ID}}" | xargs -r sudo docker rmi
+            # Get image ID for the one to keep
+            KEEP_ID=\$(sudo docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep '^$IMG_FULL ' | awk '{print \$2}')
+          
+            # Remove all images with same base name except the one to keep
+            sudo docker images $IMG_BASE --format '{{.Repository}}:{{.Tag}} {{.ID}}' \\
+              | grep -v '^$IMG_FULL ' \\
+              | awk '{print \$2}' \\
+              | xargs -r sudo docker rmi
+          
+            echo 'Restarting Docker Compose...'
             sudo docker compose -f docker-compose.dev.yaml down &&
             sudo docker compose -f docker-compose.dev.yaml up -d
           "
