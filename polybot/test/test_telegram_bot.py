@@ -50,7 +50,7 @@ class TestBot(unittest.TestCase):
 
     @patch('telebot.TeleBot')
     def setUp(self, mock_telebot):
-        bot = ImageProcessingBot(token='bot_token', telegram_chat_url='webhook_url')
+        bot = ImageProcessingBot(token='bot_token', telegram_chat_url='webhook_url',test_mode=True)
         bot.telegram_bot_client = mock_telebot.return_value
 
         mock_file = Mock()
