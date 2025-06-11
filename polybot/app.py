@@ -14,7 +14,6 @@ def index():
 
 @app.route(f'/{TELEGRAM_BOT_TOKEN}/', methods=['POST'])
 def webhook():
-    print("hi")
     req = request.get_json()
     bot.handle_message(req['message'])
     return 'Ok'

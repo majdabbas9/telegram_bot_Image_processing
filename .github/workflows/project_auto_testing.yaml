@@ -30,10 +30,6 @@ jobs:
         run: |
           pip install -r polybot/requirements.txt
 
-      - name: Create certificate file
-        run: |
-          printf '%s\n' "$CERT_CONTENT" > polybot_cer.crt
-
       - name: Test filters
         run: |
           echo -e "\n\nTesting concat()\n"
