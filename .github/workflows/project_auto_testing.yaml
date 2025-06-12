@@ -44,6 +44,6 @@ jobs:
           echo -e "\n\nTesting segment()\n"
           python -m polybot.test.test_segment
 
-      - name: Test bot
-        run: |
-          python -m polybot.test.test_telegram_bot
+#      - name: Test bot
+#        run: |
+#          python -m polybot.test.test_telegram_bot

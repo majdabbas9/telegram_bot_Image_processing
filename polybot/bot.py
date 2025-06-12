@@ -115,7 +115,7 @@ class ImageProcessingBot(Bot):
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
 
-        elif caption in ['blue', 'b']:
+        elif caption in ['blur', 'b']:
             the_img.blur()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
@@ -159,7 +159,7 @@ class ImageProcessingBot(Bot):
             user_id = msg['from']['id']
             chat_id = msg['chat']['id']
             msg_without_numbers = ''.join(c for c in msg['text'].replace(" ","").lower() if not c.isdigit() and c != '-') if not self.is_current_msg_photo(msg) else ""
-            commands = ['rotate', 'r', 'saltandpepper', 's&p', 'segment', 's', 'contour', 'c','blue','b','d','detect']
+            commands = ['rotate', 'r', 'saltandpepper', 's&p', 'segment', 's', 'contour', 'c','blur','b','d','detect']
             if self.is_current_msg_photo(msg):
                 file_path = self.download_user_photo(msg)
                 #################################################################
