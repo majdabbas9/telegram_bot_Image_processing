@@ -87,5 +87,5 @@ jobs:
           scp polybot_cer.crt ec2:/home/${{ secrets.EC2_USERNAME }}/
           # Extract image base name and current tag
           ssh ec2
-          ssh ec2 "bash /home/${{ secrets.EC2_USERNAME }}/containerize.sh $IMG_NAME"
+          ssh ec2 "cd ~ && bash containerize.sh $IMG_NAME"
 
