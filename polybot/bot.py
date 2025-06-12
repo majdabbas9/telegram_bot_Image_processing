@@ -115,7 +115,7 @@ class ImageProcessingBot(Bot):
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
 
-        elif caption in ['blue', 'b']:
+        elif caption in ['blur', 'b']:
             the_img.blur()
             new_path = the_img.save_img()
             self.send_photo(msg['chat']['id'], new_path)
