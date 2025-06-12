@@ -12,5 +12,5 @@ grep -v "$image_name" | \
 awk '{print $2}' | xargs -r sudo docker rmi
 
 
-# sudo docker compose -f docker-compose.polybot.yaml down
-# sudo docker compose -f docker-compose.polybot.yaml up -d
+sudo docker compose -f docker-compose.polybot.yaml down
+sudo docker compose -f docker-compose.polybot.yaml up -d
