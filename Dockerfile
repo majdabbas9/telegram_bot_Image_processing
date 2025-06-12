@@ -18,8 +18,6 @@ RUN pip install --upgrade pip && \
 # Copy the app
 COPY . .
 
-# Expose port
-EXPOSE 8443
 
 # Run the app
 CMD ["python3", "-m", "polybot.app"]
