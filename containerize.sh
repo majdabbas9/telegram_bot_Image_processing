@@ -2,6 +2,8 @@
 
 # This script deletes all Docker images with the name 'majdabbas99/polybot_build_dev'
 image_name=$1
+
+echo "hi $image_name"
 prefix="${image_name%%:*}:"
 
 sudo docker images --format "{{.Repository}}:{{.Tag}} {{.ID}}" | \
