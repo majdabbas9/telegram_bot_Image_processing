@@ -3,7 +3,6 @@ from flask import request
 import os
 from polybot.bot import Bot, QuoteBot, ImageProcessingBot
 app = flask.Flask(__name__)
-
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 Nginx_url = os.getenv('NGINX_URL')
 

@@ -1,11 +1,18 @@
 from pathlib import Path
+from queue import Queue
+
 from matplotlib.image import imread, imsave
 import re
 import requests
 import os
 from S3_requests import upload_file,download_file
+import boto3
+import json
+from botocore.exceptions import ClientError
+from polybot.bot import QuoteBot
 ipYolo = os.getenv('ipYolo')
 S3_bucket_name = os.getenv('S3_BUCKET_NAME')
+Queue_URL = os.getenv('QUEUE_URL')
 def rgb2gray(rgb):
     r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
     gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
@@ -162,7 +169,9 @@ class Img:
         from datetime import datetime, timezone
         file_path = str(self.path.resolve())
         s3_file_to_save = f'poly_to_yolo_images/{datetime.now(timezone.utc).strftime("%d%m%Y%H%M%S")}{chat_id}{self.path.suffix}'
+        sqs = boto3.client('sqs', region_name='eu-west-1')
         upload_file(file_path, f'{S3_bucket_name}', s3_file_to_save)
+        response = sqs.send_message(QueueUrl=Queue_URL, MessageBody=json.dumps('{s3_key }'))
         response = requests.post(f"{ipYolo}/predict?s3_key={s3_file_to_save}")
         if response.status_code == 200:
             download_file(f'{S3_bucket_name}', f'yolo_to_poly_images/{s3_file_to_save.split("/")[-1]}',f"tmp{self.path.suffix}")
