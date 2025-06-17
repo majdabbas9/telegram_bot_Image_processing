@@ -1,4 +1,3 @@
-# The name of the workflow
 name: Polybot Build Prod
 
 on:
@@ -6,6 +5,10 @@ on:
     branches:
      - main
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main    # Run Docker Scout scan on PRs to main branch
+
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -14,28 +17,73 @@ jobs:
       output1: ${{ steps.step1.outputs.image }}
     steps:
       - uses: actions/checkout@v4
+      
       - name: Build Docker image
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-        run :
+        run: |
           echo "Building Docker image for prod branch"
 
       - id: step1
         run: |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-          img_name="/polybot_build_prod:${{github.run_number}}"
-          # same docker_image to pass it to the next workflow 
+          img_name="/polybot_build_prod:${{ github.run_number }}"
+          # Pass the docker image name to the next workflow
           echo "image=$img_name" >> "$GITHUB_OUTPUT"
           echo "Building Docker image: ${{ secrets.DOCKERHUB_USERNAME }}$img_name"
-          # build & push the image 
-          docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name"  .
+          # Build and push the docker image
+          docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name" .
+
+  DockerScoutScan:
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image for scanning
+        run: |
+          docker build -t polybot-temp-image .
+
+      - name: Docker Scout Scan
+        id: scout
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: polybot-temp-image
+          only-severities: critical,high
+          summary: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          exit-code: 1  # Fail the PR if critical or high vulnerabilities found
+
+      - name: Add PR comment with scan summary
+        if: always()
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: docker-scout-report
+          message: |
+            🕵️ **Docker Scout Report**
+            Scan completed for the Docker image.
+
+            *Critical/High issues will fail this PR.*
+            ${{ steps.scout.outputs.summary }}
 
   Deploy:
-    needs: Build
+    needs: [Build, DockerScoutScan]
     uses: ./.github/workflows/deploy_polybot.yaml
     with:
-      image: ${{needs.Build.outputs.output1}}
+      image: ${{ needs.Build.outputs.output1 }}
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
       EC2_HOST: ${{ secrets.EC2_HOST }}
@@ -46,4 +94,3 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       APP_NGINX_URL : ${{ secrets.APP_NGINX_URL }}
       QUEUE_URL: ${{ secrets.QUEUE_URL }}
-
