@@ -166,9 +166,10 @@ class Img:
             return None
 
     def detect_objects(self,chat_id):
-        from datetime import datetime, timezone
+        import uuid
+        uid = str(uuid.uuid4())
         file_path = str(self.path.resolve())
-        s3_file_to_save = f'poly_to_yolo_images/{datetime.now(timezone.utc).strftime("%d%m%Y%H%M%S")}{chat_id}{self.path.suffix}'
+        s3_file_to_save = f'poly_to_yolo_images/{uid}{chat_id}{self.path.suffix}'
         sqs = boto3.client('sqs', region_name='eu-west-1')
         upload_file(file_path, f'{S3_bucket_name}', s3_file_to_save)
         sqs.send_message(QueueUrl=Queue_URL, MessageBody=json.dumps({"s3_key": s3_file_to_save,"chat_id": chat_id,"file_path": file_path}))
