@@ -16,8 +16,6 @@ def webhook():
     bot.handle_message(req['message'])
     return 'Ok'
 
-
-
 @app.route(f'/predictions/', methods=['POST'])
 def send_detected_objects():
     req = request.get_json()
