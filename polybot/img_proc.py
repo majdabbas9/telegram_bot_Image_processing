@@ -6,7 +6,6 @@ import os
 from S3_requests import upload_file,download_file
 import boto3
 import json
-
 S3_bucket_name = os.getenv('S3_BUCKET_NAME')
 Queue_URL = os.getenv("QUEUE_URL")
 from db_for_prediction import DynamoDBDatabaseHandler
@@ -180,7 +179,6 @@ class Img:
         download_file(S3_bucket_name, image_url,f"tmp{self.path.suffix}")
         self.data = imread(os.path.join(f"tmp{self.path.suffix}"))
         os.remove(os.path.join(f"tmp{self.path.suffix}"))
-
 if __name__ == '__main__':
     my_img = Img('images_to_test/1.jpg')
     # my_img.rotate_in_steps(-2)
