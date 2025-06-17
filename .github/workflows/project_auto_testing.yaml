@@ -4,10 +4,10 @@ on:
     branches:
       - main
       - dev3
-    pull_request:
-      branches:
-        - main
-        - dev3  -
+  pull_request:
+    branches:
+      - main
+      - dev3  -
 
 permissions: {}
 
