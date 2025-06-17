@@ -122,8 +122,6 @@ class ImageProcessingBot(Bot):
 
         elif caption in ['detect', 'd']:
             the_img.detect_objects(chat_id)
-            new_path = the_img.save_img()
-            self.send_photo(msg['chat']['id'], new_path)
         else :
             self.send_photo(msg['chat']['id'], 'no such command')
 
@@ -219,4 +217,9 @@ class ImageProcessingBot(Bot):
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             self.send_text(msg['chat']['id'], f"An error occurred: {e}")
+    def handle_callback_yolo(self,uid,chat_id,file_path,image_url):
+        the_img = Img(file_path)
+        the_img.get_detected_objects(uid,image_url)
+        new_path = the_img.save_img()
+        self.send_photo(chat_id, new_path)
 

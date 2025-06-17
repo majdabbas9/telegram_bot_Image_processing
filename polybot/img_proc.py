@@ -4,8 +4,16 @@ import re
 import requests
 import os
 from S3_requests import upload_file,download_file
-ipYolo = os.getenv('ipYolo')
+import boto3
+import json
+
 S3_bucket_name = os.getenv('S3_BUCKET_NAME')
+Queue_URL = os.getenv("QUEUE_URL")
+from db_for_prediction import DynamoDBDatabaseHandler
+ENVIRONMENT = 'dev' if 'dev' in S3_bucket_name.lower() else 'prod'
+db = DynamoDBDatabaseHandler(env=ENVIRONMENT,table_prefix='majd_yolo')
+
+
 def rgb2gray(rgb):
     r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
     gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
@@ -162,17 +170,16 @@ class Img:
         from datetime import datetime, timezone
         file_path = str(self.path.resolve())
         s3_file_to_save = f'poly_to_yolo_images/{datetime.now(timezone.utc).strftime("%d%m%Y%H%M%S")}{chat_id}{self.path.suffix}'
+        sqs = boto3.client('sqs', region_name='eu-west-1')
         upload_file(file_path, f'{S3_bucket_name}', s3_file_to_save)
-        response = requests.post(f"{ipYolo}/predict?s3_key={s3_file_to_save}")
-        if response.status_code == 200:
-            download_file(f'{S3_bucket_name}', f'yolo_to_poly_images/{s3_file_to_save.split("/")[-1]}',f"tmp{self.path.suffix}")
-            self.data = imread(os.path.join(f"tmp{self.path.suffix}"))
-            os.remove(os.path.join(f"tmp{self.path.suffix}"))
+        sqs.send_message(QueueUrl=Queue_URL, MessageBody=json.dumps({"s3_key": s3_file_to_save,"chat_id": chat_id,"file_path": file_path}))
 
-
-
-
-
+    def get_detected_objects(self,uid,image_url):
+        predicted_image = db.get_predicted_image(uid)
+        print(f"tmp{self.path.suffix}")
+        download_file(S3_bucket_name, image_url,f"tmp{self.path.suffix}")
+        self.data = imread(os.path.join(f"tmp{self.path.suffix}"))
+        os.remove(os.path.join(f"tmp{self.path.suffix}"))
 
 if __name__ == '__main__':
     my_img = Img('images_to_test/1.jpg')
