@@ -122,8 +122,6 @@ class ImageProcessingBot(Bot):
 
         elif caption in ['detect', 'd']:
             the_img.detect_objects(chat_id)
-            #new_path = the_img.save_img()
-            #self.send_photo(msg['chat']['id'], new_path)
         else :
             self.send_photo(msg['chat']['id'], 'no such command')
 
