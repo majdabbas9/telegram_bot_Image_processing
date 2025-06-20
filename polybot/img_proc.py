@@ -11,9 +11,11 @@ Queue_URL = os.getenv("QUEUE_URL")
 from db_for_prediction import DynamoDBDatabaseHandler
 if S3_bucket_name is not None:
     ENVIRONMENT = 'dev' if 'dev' in S3_bucket_name.lower() else 'prod'
+    db = DynamoDBDatabaseHandler(env=ENVIRONMENT, table_prefix='majd_yolo')
 else :
+    db = None
     ENVIRONMENT = 'dev'
-db = DynamoDBDatabaseHandler(env=ENVIRONMENT,table_prefix='majd_yolo')
+
 
 
 def rgb2gray(rgb):
@@ -178,7 +180,8 @@ class Img:
         sqs.send_message(QueueUrl=Queue_URL, MessageBody=json.dumps({"s3_key": s3_file_to_save,"chat_id": chat_id,"file_path": file_path}))
 
     def get_detected_objects(self,uid,image_url):
-        predicted_image = db.get_predicted_image(uid)
+        if not db :
+            predicted_image = db.get_predicted_image(uid)
         print(f"tmp{self.path.suffix}")
         download_file(S3_bucket_name, image_url,f"tmp{self.path.suffix}")
         self.data = imread(os.path.join(f"tmp{self.path.suffix}"))
