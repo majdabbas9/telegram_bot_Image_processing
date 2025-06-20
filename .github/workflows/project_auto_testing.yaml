@@ -2,7 +2,6 @@ name: Project auto-testing
 on:
   push:
     branches:
-      - main
       - dev3
   pull_request:
     branches:
