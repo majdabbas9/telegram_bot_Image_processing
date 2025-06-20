@@ -40,7 +40,6 @@ jobs:
       exit-code: 1                    # ❌ Fail the job if CRITICAL or HIGH vulnerabilities
       summary: true                   # ✅ Show results in GitHub Actions summary
       write-comment: true            # ✅ Post a comment on the PR
-      github-token: ${{ secrets.GITHUB_TOKEN }}
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
       EC2_HOST: ${{ secrets.EC2_HOST }}
