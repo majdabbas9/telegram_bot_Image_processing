@@ -46,6 +46,7 @@ jobs:
       exit-code: 1
       summary: true
       write-comment: true
+      github-token: ${{ secrets.GITHUB_TOKEN }}
       format: json
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
