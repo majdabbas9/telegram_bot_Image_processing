@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
-Copy polybot/requirements.txt .
+COPY polybot/requirements.txt .
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
