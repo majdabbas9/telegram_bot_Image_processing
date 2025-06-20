@@ -9,7 +9,10 @@ import json
 S3_bucket_name = os.getenv('S3_BUCKET_NAME')
 Queue_URL = os.getenv("QUEUE_URL")
 from db_for_prediction import DynamoDBDatabaseHandler
-ENVIRONMENT = 'dev' if 'dev' in S3_bucket_name.lower() else 'prod'
+if S3_bucket_name is not None:
+    ENVIRONMENT = 'dev' if 'dev' in S3_bucket_name.lower() else 'prod'
+else :
+    ENVIRONMENT = 'dev'
 db = DynamoDBDatabaseHandler(env=ENVIRONMENT,table_prefix='majd_yolo')
 
 
