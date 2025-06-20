@@ -14,8 +14,7 @@ RUN apk update && apk upgrade && \
     mesa-gl \
     libxrender \
     libxext \
-    libsm \
-    curl \
+    libsm
 # Copy only requirements file for layer caching
 COPY polybot/requirements.txt .
 
