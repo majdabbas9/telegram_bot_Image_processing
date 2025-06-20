@@ -20,8 +20,8 @@ WORKDIR /app
 #    libsm6
 RUN apk update && apk upgrade && \
     apk add --no-cache \
-    libxrender1 \
-    libsm6
+    libxrender \
+    libsm
 COPY polybot/requirements.txt .
 
 # Install Python dependencies
