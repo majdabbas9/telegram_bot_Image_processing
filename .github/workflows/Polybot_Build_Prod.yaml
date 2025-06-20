@@ -6,6 +6,11 @@ on:
     branches:
      - main
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write  # 👈 Required to post comments on PR
+
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -35,11 +40,13 @@ jobs:
     needs: Build
     uses: ./.github/workflows/deploy_polybot.yaml
     with:
+      command: cves
       image: ${{needs.Build.outputs.output1}}
       only-severities: critical,high
-      exit-code: 1                    # ❌ Fail the job if CRITICAL or HIGH vulnerabilities
-      summary: true                   # ✅ Show results in GitHub Actions summary
-      write-comment: true            # ✅ Post a comment on the PR
+      exit-code: 1
+      summary: true
+      write-comment: true
+      format: json
     secrets:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
       EC2_HOST: ${{ secrets.EC2_HOST }}
