@@ -10,7 +10,7 @@ import re
 import requests
 class Bot:
 
-    def __init__(self, token, telegram_chat_url,test_mode=False):
+    def __init__(self, token, telegram_chat_url):
         # create a new instance of the TeleBot class.
         # all communication with Telegram servers are done using self.telegram_bot_client
         self.telegram_bot_client = telebot.TeleBot(token)
@@ -19,17 +19,15 @@ class Bot:
         self.telegram_bot_client.remove_webhook()
         time.sleep(1.5)  # wait for the webhook to be removed
         # set the webhook URL
-        if test_mode:
+        try:
+            with open("/app/polybot_cer.crt", 'r') as cert:
+                self.telegram_bot_client.set_webhook(
+                    url=f'{telegram_chat_url}/{token}/', timeout=60, certificate=cert
+                )
+        except FileNotFoundError:
+            logger.warning("Certificate file not found. Falling back to non-certificate webhook.")
             self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60)
-        else:
-            try:
-                with open("/app/polybot_cer.crt", 'r') as cert:
-                    self.telegram_bot_client.set_webhook(
-                        url=f'{telegram_chat_url}/{token}/', timeout=60, certificate=cert
-                    )
-            except FileNotFoundError:
-                logger.warning("Certificate file not found. Falling back to default webhook.")
-                self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60)
+
         logger.info(f'Telegram Bot information\n\n{self.telegram_bot_client.get_me()}')
 
     def send_text(self, chat_id, text):
