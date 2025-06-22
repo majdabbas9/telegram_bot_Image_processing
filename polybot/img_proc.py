@@ -6,6 +6,8 @@ import os
 from S3_requests import upload_file,download_file
 import boto3
 import json
+from dotenv import load_dotenv
+load_dotenv()
 S3_bucket_name = os.getenv('S3_BUCKET_NAME')
 Queue_URL = os.getenv("QUEUE_URL")
 from db_for_prediction import DynamoDBDatabaseHandler
