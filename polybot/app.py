@@ -4,7 +4,6 @@ import os
 from polybot.bot import Bot, QuoteBot, ImageProcessingBot
 app = flask.Flask(__name__)
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-Nginx_url = os.getenv('NGINX_URL')
 @app.route('/', methods=['GET'])
 def index():
     return 'Ok'
@@ -28,5 +27,5 @@ def send_detected_objects():
     return 'Ok'
 
 if __name__ == "__main__":
-    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, Nginx_url)
+    bot = ImageProcessingBot(TELEGRAM_BOT_TOKEN, 'https://majd.app.fursa.click')
     app.run(host='0.0.0.0', port=8443)
