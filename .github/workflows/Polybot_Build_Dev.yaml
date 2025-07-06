@@ -38,5 +38,5 @@ jobs:
           python3 build_image.py \
             --region eu-west-1 \
             --secret-name majd/dev/polybot \
-            --ssm-param majd/dev/polybot_image_name \
+            --ssm-param /majd/dev/polybot_image_name \
             --image-name "$img_name"
