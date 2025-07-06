@@ -36,7 +36,7 @@ jobs:
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
           img_name="majdabbas99/polybot_build_prod:${{github.run_number}}"
           python3 build_image.py \
-            --region eu-wast-1 \
+            --region eu-west-1 \
             --secret-name majd/dev/polybot \
             --ssm-param majd/dev/polybot_image_name \
             --image-name "$img_name"
