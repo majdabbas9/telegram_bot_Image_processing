@@ -36,8 +36,8 @@ def build_and_push_image(image_name, secrets):
         "docker", "build", ".", "--push",
         "-t", image_name,
         "--build-arg", f"TELEGRAM_TOKEN={telegram_token}",
-        "--build-arg", f"SQS_URL={sqs_url}",
-        "--build-arg", f"S3_BUCKET_ID={s3_bucket_id}"
+        "--build-arg", f"QUEUE_URL={sqs_url}",
+        "--build-arg", f"S3_BUCKET_NAME={s3_bucket_id}"
     ]
 
     logging.info(f"📦 Running Docker command: {' '.join(build_command)}")
