@@ -35,7 +35,7 @@ def build_and_push_image(image_name, secrets):
     build_command = [
         "docker", "build", ".", "--push",
         "-t", image_name,
-        "--build-arg", f"TELEGRAM_TOKEN={telegram_token}",
+        "--build-arg", f"TELEGRAM_BOT_TOKEN={telegram_token}",
         "--build-arg", f"QUEUE_URL={sqs_url}",
         "--build-arg", f"S3_BUCKET_NAME={s3_bucket_id}"
     ]
