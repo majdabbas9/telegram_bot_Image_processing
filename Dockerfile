@@ -2,7 +2,15 @@ FROM python:3.10-alpine
 
 WORKDIR /app
 
-# Install system dependencies compatible with Alpine
+# Accept and set secrets via build args
+ARG TELEGRAM_BOT_TOKEN
+ARG QUEUE_URL
+ARG S3_BUCKET_NAME
+
+ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+ENV QUEUE_URL=${QUEUE_URL}
+ENV S3_BUCKET_NAME=${S3_BUCKET_NAME}
+
 RUN apk update && apk upgrade && \
     apk add --no-cache \
     build-base \
@@ -16,18 +24,12 @@ RUN apk update && apk upgrade && \
     libxext \
     libsm \
     curl
-# Copy only requirements file for layer caching
+
 COPY polybot/requirements.txt .
 
-# Install Python dependencies
 RUN pip install --upgrade pip setuptools && \
     pip install -r requirements.txt
 
-
-
-# Copy the app
 COPY . .
 
-
-# Run the app
 CMD ["python3", "-m", "polybot.app"]
