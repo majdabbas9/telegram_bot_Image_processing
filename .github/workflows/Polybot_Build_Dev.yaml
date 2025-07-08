@@ -1,3 +1,4 @@
+# The name of the workflow
 name: Polybot Build Dev
 
 on:
@@ -5,34 +6,44 @@ on:
     branches:
      - dev4
   workflow_dispatch:
-
 jobs:
   Build:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: production
+    outputs:
+      output1: ${{ steps.step1.outputs.image }}
     steps:
       - uses: actions/checkout@v4
+      - name: Build Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run :
+          echo "Building Docker image for main branch"
 
-      - name: Echo Docker build start
-        run: echo "Building Docker image for dev4 branch"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Build and Push Docker Image
+      - id: step1
         run: |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-          IMG_NAME="${{ secrets.DOCKERHUB_USERNAME }}/polybot_dev_Image:${{ github.run_number }}"
-          docker build -t "$IMG_NAME" .
-          docker push "$IMG_NAME"
+          img_name="/polybot_build_prod:${{github.run_number}}"
+          # same docker_image to pass it to the next workflow 
+          echo "image=$img_name" >> "$GITHUB_OUTPUT"
+          echo "Building Docker image: ${{ secrets.DOCKERHUB_USERNAME }}$img_name"
+          # build & push the image 
+          docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name"  .
 
-          aws ssm put-parameter \
-            --name "/majd/dev/polybot_image_name" \
-            --value "$IMG_NAME" \
-            --type "SecureString" \
-            --overwrite \
-            --region "eu-west-1"
+  Deploy:
+    needs: Build
+    uses: ./.github/workflows/deploy_polybot.yaml
+    with:
+      image: ${{needs.Build.outputs.output1}}
+    secrets:
+      EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+      EC2_HOST: ${{ secrets.EC2_HOST }}
+      EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+      APP_CERT: ${{ secrets.APP_CERT }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      APP_NGINX_URL: ${{ secrets.APP_NGINX_URL }}
+      QUEUE_URL: ${{ secrets.QUEUE_URL }}
+
