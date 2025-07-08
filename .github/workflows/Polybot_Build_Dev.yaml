@@ -36,4 +36,3 @@ jobs:
             --type "SecureString" \
             --overwrite \
             --region "eu-west-1"
-
