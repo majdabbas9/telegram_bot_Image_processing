@@ -1,7 +1,18 @@
 import flask
-from flask import request
 import os
+import sys
+import logging
+from flask import request
 from polybot.bot import Bot, QuoteBot, ImageProcessingBot
+from polybot.fetch_secrets import fetch_secrets, load_secrets_into_env
+secrets_path_sm = os.getenv("SECRETS")
+try:
+    secrets = fetch_secrets(secret_name=secrets_path_sm, region="eu-west-1")
+    load_secrets_into_env(secrets)
+except Exception:
+    logging.critical("❌ Failed to load secrets. Exiting.")
+    sys.exit(1)
+########################################################################################################################
 app = flask.Flask(__name__)
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 @app.route('/', methods=['GET'])
