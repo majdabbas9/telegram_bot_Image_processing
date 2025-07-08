@@ -4,7 +4,7 @@ name: Polybot Build Dev
 on:
   push:
     branches:
-     - dev3
+     - dev4
   workflow_dispatch:
 jobs:
   Build:
@@ -19,7 +19,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
         run :
-          echo "Building Docker image for dev3 branch"
+          echo "Building Docker image for dev4 branch"
 
       - id: step1
         run: |
@@ -45,5 +45,5 @@ jobs:
       S3_BUCKET: ${{ secrets.S3_BUCKET_DEV }}
       DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       APP_NGINX_URL: ${{ secrets.APP_DEV_NGINX_URL }}
-      APP_YOLO_IP: ${{ secrets.APP_DEV_YOLO_IP }}
+      QUEUE_URL: ${{ secrets.QUEUE_URL_DEV }}
 

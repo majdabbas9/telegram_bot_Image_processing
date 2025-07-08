@@ -1,19 +1,29 @@
-# Base image
-FROM python:3.11-slim
+FROM python:3.10-alpine
 
-# Set working directory
 WORKDIR /app
-# Install only essential system packages (adjust only if needed)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libsm6 \
-    libxrender1 \
-    && rm -rf /var/lib/apt/lists/*
 
-Copy polybot/requirements.txt .
+# Install system dependencies compatible with Alpine
+RUN apk update && apk upgrade && \
+    apk add --no-cache \
+    build-base \
+    libffi-dev \
+    musl-dev \
+    jpeg-dev \
+    zlib-dev \
+    libstdc++ \
+    mesa-gl \
+    libxrender \
+    libxext \
+    libsm \
+    curl
+# Copy only requirements file for layer caching
+COPY polybot/requirements.txt .
 
 # Install Python dependencies
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip setuptools && \
+    pip install -r requirements.txt
+
+
 
 # Copy the app
 COPY . .

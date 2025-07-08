@@ -1,5 +1,5 @@
 # The name of the workflow
-name: Polybot Build Prod
+name: Polybot Build Dev
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
         run :
-          echo "Building Docker image for prod branch"
+          echo "Building Docker image for main branch"
 
       - id: step1
         run: |
@@ -44,6 +44,6 @@ jobs:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
       S3_BUCKET: ${{ secrets.S3_BUCKET }}
       DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      APP_NGINX_URL : ${{ secrets.APP_NGINX_URL }}
-      APP_YOLO_IP : ${{ secrets.APP_YOLO_IP }}
+      APP_NGINX_URL: ${{ secrets.APP_NGINX_URL }}
+      QUEUE_URL: ${{ secrets.QUEUE_URL }}
 

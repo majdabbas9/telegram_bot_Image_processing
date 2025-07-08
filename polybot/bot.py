@@ -10,7 +10,7 @@ import re
 import requests
 class Bot:
 
-    def __init__(self, token, telegram_chat_url,test_mode=False):
+    def __init__(self, token, telegram_chat_url):
         # create a new instance of the TeleBot class.
         # all communication with Telegram servers are done using self.telegram_bot_client
         self.telegram_bot_client = telebot.TeleBot(token)
@@ -19,9 +19,13 @@ class Bot:
         self.telegram_bot_client.remove_webhook()
         time.sleep(1.5)  # wait for the webhook to be removed
         # set the webhook URL
-        if not test_mode:
-            self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60 , certificate=open("/app/polybot_cer.crt", 'r'))
-        else:
+        try:
+            with open("/app/polybot_cer.crt", 'r') as cert:
+                self.telegram_bot_client.set_webhook(
+                    url=f'{telegram_chat_url}/{token}/', timeout=60, certificate=cert
+                )
+        except FileNotFoundError:
+            logger.warning("Certificate file not found. Falling back to non-certificate webhook.")
             self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60)
 
         logger.info(f'Telegram Bot information\n\n{self.telegram_bot_client.get_me()}')
@@ -122,8 +126,6 @@ class ImageProcessingBot(Bot):
 
         elif caption in ['detect', 'd']:
             the_img.detect_objects(chat_id)
-            new_path = the_img.save_img()
-            self.send_photo(msg['chat']['id'], new_path)
         else :
             self.send_photo(msg['chat']['id'], 'no such command')
 
@@ -219,4 +221,9 @@ class ImageProcessingBot(Bot):
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             self.send_text(msg['chat']['id'], f"An error occurred: {e}")
+    def handle_callback_yolo(self,uid,chat_id,file_path,image_url):
+        the_img = Img(file_path)
+        the_img.get_detected_objects(uid,image_url)
+        new_path = the_img.save_img()
+        self.send_photo(chat_id, new_path)
 

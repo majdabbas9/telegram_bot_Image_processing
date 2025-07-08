@@ -25,7 +25,7 @@ on:
         required: true
       APP_NGINX_URL:
         required: true
-      APP_YOLO_IP:
+      QUEUE_URL:
         required: true
   workflow_dispatch:
     inputs:
@@ -80,7 +80,7 @@ jobs:
           TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
           NGINX_URL=${{ secrets.APP_NGINX_URL }}
           S3_BUCKET_NAME=${{ secrets.S3_BUCKET }}
-          ipYolo=${{ secrets.APP_YOLO_IP }}
+          QUEUE_URL=${{ secrets.QUEUE_URL }}
           """ > .env
           printf '%s\n' '${{ secrets.APP_CERT }}' > polybot_cer.crt
           scp .env ec2:/home/${{ secrets.EC2_USERNAME }}/
