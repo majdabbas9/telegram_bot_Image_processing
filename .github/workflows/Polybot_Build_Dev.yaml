@@ -1,4 +1,3 @@
-# The name of the workflow
 name: Polybot Build Dev
 
 on:
@@ -6,30 +5,31 @@ on:
     branches:
      - dev4
   workflow_dispatch:
+
 jobs:
   Build:
     runs-on: ubuntu-latest
     environment: dev
     steps:
       - uses: actions/checkout@v4
-      - name: Build Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-        run :
-          echo "Building Docker image for dev3 branch"
+
+      - name: Echo Docker build start
+        run: echo "Building Docker image for dev4 branch"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
       - name: Build and Push Docker Image
         run: |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-          IMG_NAME="${{ secrets.DOCKERHUB_USERNAME }}/polybot_dev_Image:${{github.run_number}}" 
-          # build & push the image 
-          docker build --push -t "$IMG_NAME"  .
+          IMG_NAME="${{ secrets.DOCKERHUB_USERNAME }}/polybot_dev_Image:${{ github.run_number }}"
+          docker build -t "$IMG_NAME" .
+          docker push "$IMG_NAME"
+
           aws ssm put-parameter \
             --name "/majd/dev/polybot_image_name" \
             --value "$IMG_NAME" \
