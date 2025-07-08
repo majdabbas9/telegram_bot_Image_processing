@@ -29,21 +29,4 @@ jobs:
           echo "image=$img_name" >> "$GITHUB_OUTPUT"
           echo "Building Docker image: ${{ secrets.DOCKERHUB_USERNAME }}$img_name"
           # build & push the image 
-          docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name"  .
-
-  Deploy:
-    needs: Build
-    uses: ./.github/workflows/deploy_polybot.yaml
-    with:
-      image: ${{needs.Build.outputs.output1}}
-    secrets:
-      EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-      EC2_HOST: ${{ secrets.EC2_HOST }}
-      EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
-      APP_CERT: ${{ secrets.APP_CERT }}
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-      S3_BUCKET: ${{ secrets.S3_BUCKET }}
-      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      APP_NGINX_URL: ${{ secrets.APP_NGINX_URL }}
-      QUEUE_URL: ${{ secrets.QUEUE_URL }}
-
+          # docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name"  .
