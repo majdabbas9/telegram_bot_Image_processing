@@ -34,11 +34,11 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-          IMG_NAME="${{ secrets.DOCKERHUB_USERNAME }}/polybot_build_dev:${{github.run_number}}"
+          IMG_NAME="${{ secrets.DOCKERHUB_USERNAME }}/polybot_dev:${{github.run_number}}"
           aws ssm put-parameter \
             --name "/majd/dev/polybot_image_name" \
             --value "$IMG_NAME" \
             --type "SecureString" \
             --overwrite \
             --region "eu-west-1"
-          docker build --push -t $IMG_NAME  .
+          docker build --push -t "$IMG_NAME"  .
