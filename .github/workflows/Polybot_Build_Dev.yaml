@@ -9,9 +9,7 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
-    environment: production
-    outputs:
-      output1: ${{ steps.step1.outputs.image }}
+    environment: environment-dev
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
@@ -21,29 +19,24 @@ jobs:
         run :
           echo "Building Docker image for dev3 branch"
 
-      - id: step1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Build and Push Docker Image
         run: |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
           img_name="/polybot_build_dev:${{github.run_number}}"
-          # same docker_image to pass it to the next workflow 
-          echo "image=$img_name" >> "$GITHUB_OUTPUT"
           echo "Building Docker image: ${{ secrets.DOCKERHUB_USERNAME }}$img_name"
           # build & push the image 
           docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name"  .
+          aws ssm put-parameter \
+            --name "/majd/dev/polybot_image_name" \
+            --value "${{ secrets.DOCKERHUB_USERNAME }}$img_name" \
+            --type "SecureString" \
+            --overwrite \
+            --region "eu-west-1"
 
-  Deploy:
-    needs: Build
-    uses: ./.github/workflows/deploy_polybot.yaml
-    with:
-      image: ${{needs.Build.outputs.output1}}
-    secrets:
-      EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-      EC2_HOST: ${{ secrets.EC2_HOST_DEV }}
-      EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
-      APP_CERT: ${{ secrets.APP_DEV_CERT }}
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
-      S3_BUCKET: ${{ secrets.S3_BUCKET_DEV }}
-      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      APP_NGINX_URL: ${{ secrets.APP_DEV_NGINX_URL }}
-      QUEUE_URL: ${{ secrets.QUEUE_URL_DEV }}
 
