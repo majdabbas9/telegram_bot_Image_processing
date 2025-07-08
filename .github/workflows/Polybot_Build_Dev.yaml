@@ -1,4 +1,3 @@
-# The name of the workflow
 name: Polybot Build Dev
 
 on:
@@ -6,27 +5,41 @@ on:
     branches:
      - dev4
   workflow_dispatch:
+
 jobs:
   Build:
     runs-on: ubuntu-latest
     environment: production
     outputs:
       output1: ${{ steps.step1.outputs.image }}
+
     steps:
       - uses: actions/checkout@v4
+
+      # 🧪 Log in to GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u majdabbas9 --password-stdin
+
+      # 🧱 Build and Push the Image
+      - id: step1
+        run: |
+          img_name="ghcr.io/majdabbas9/telegram_bot_images:${{ github.run_number }}"
+          docker build --push -t "$img_name" .
+          echo "image=$img_name" >> "$GITHUB_OUTPUT"
+
+      # 🔐 Push the image name to AWS SSM
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - id: step1
+
+      - name: Store image name in SSM
         run: |
-          img_name="ghcr.io/majdabbas9/telegram_bot_images:${{github.run_number}}"
-          docker build --push -t "$img_name" .
           aws ssm put-parameter \
             --name "/majd/dev/polybot_image_name" \
-            --value "${{ secrets.DOCKERHUB_USERNAME }}$img_name" \
+            --value "${{ steps.step1.outputs.image }}" \
             --type "SecureString" \
             --overwrite \
             --region "eu-west-1"
