@@ -15,20 +15,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
         run :
           echo "Building Docker image for dev branch"
-#      - name: Configure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          aws-region: eu-west-1
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: step1
         run: |
-          # docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
+#          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
           img_name="ghcr.io/majdabbas9/telegram_bot_images:${{github.run_number}}"
           docker build --push -t "$img_name" .
           aws ssm put-parameter \
