@@ -2,11 +2,14 @@ FROM python:3.10-alpine
 
 WORKDIR /app
 
-# Accept build argument
-ARG SECRETS
+# Accept and set secrets via build args
+ARG TELEGRAM_BOT_TOKEN
+ARG QUEUE_URL
+ARG S3_BUCKET_NAME
 
-# Optional: use env arg inside image (for debugging or ENV config)
-ENV ENV=$SECRETS
+ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+ENV QUEUE_URL=${QUEUE_URL}
+ENV S3_BUCKET_NAME=${S3_BUCKET_NAME}
 
 RUN apk update && apk upgrade && \
     apk add --no-cache \
