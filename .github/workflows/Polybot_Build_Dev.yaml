@@ -29,8 +29,8 @@ jobs:
       - id: step1
         run: |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-          img_name="/polybot_dev:${{github.run_number}}"
-          docker build --push -t "${{ secrets.DOCKERHUB_USERNAME }}$img_name"  .
+          img_name="ghcr.io/majdabbas9/telegram_bot_images:${{github.run_number}}"
+          docker build --push -t "$img_name" .
           aws ssm put-parameter \
             --name "/majd/dev/polybot_image_name" \
             --value "${{ secrets.DOCKERHUB_USERNAME }}$img_name" \
