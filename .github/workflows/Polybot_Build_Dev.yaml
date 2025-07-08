@@ -35,4 +35,4 @@ jobs:
         run: |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
           img_name="majdabbas99/polybot_build_dev:${{github.run_number}}"
-          docker build --push --build-arg SECRETS='majd/dev/polybot' -t "$img_name" .
+          docker buildx build --push --build-arg SECRETS='majd/dev/polybot' -t $IMAGE_NAME .
