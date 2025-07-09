@@ -213,6 +213,8 @@ class ImageProcessingBot(Bot):
                 self.send_text(msg['chat']['id'], "majd abbas")
             elif msg["text"].lower() in ["how are you","how are you!"]:
                 self.send_text(msg['chat']['id'], "I am good , How are you?!")
+            elif msg["text"].lower() in ["hi how are you ?"]:
+                self.send_text(msg['chat']['id'], "I am good , How are you?!")
             else:
                 self.send_text(msg['chat']['id'], f'No commands like that!')
         except Exception as e:
