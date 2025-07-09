@@ -9,7 +9,7 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
-    environment: production
+    environment: dev
     outputs:
       output1: ${{ steps.step1.outputs.image }}
 
