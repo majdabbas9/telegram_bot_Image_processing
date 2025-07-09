@@ -9,7 +9,7 @@ class DynamoDBDatabaseHandler:
         self.dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
         self.prefix = f"{table_prefix}_{env}"  # e.g., "dev_majd_yolo"
 
-        self.prediction_sessions_table = self.dynamodb.Table(f"{self.prefix}_prediction_sessions")
+        self.prediction_sessions_table = self.dynamodb.Table(f"{self.prefix}_prediction_session")
         self.detection_objects_table = self.dynamodb.Table(f"{self.prefix}_detection_objects")
 
         self.init_db()
