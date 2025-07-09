@@ -19,14 +19,7 @@ class Bot:
         self.telegram_bot_client.remove_webhook()
         time.sleep(1.5)  # wait for the webhook to be removed
         # set the webhook URL
-        try:
-            with open("/app/polybot_cer.crt", 'r') as cert:
-                self.telegram_bot_client.set_webhook(
-                    url=f'{telegram_chat_url}/{token}/', timeout=60, certificate=cert
-                )
-        except FileNotFoundError:
-            logger.warning("Certificate file not found. Falling back to non-certificate webhook.")
-            self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60)
+        self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/', timeout=60)
 
         logger.info(f'Telegram Bot information\n\n{self.telegram_bot_client.get_me()}')
 
