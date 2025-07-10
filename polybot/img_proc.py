@@ -8,10 +8,12 @@ import boto3
 import json
 S3_bucket_name = os.getenv('S3_BUCKET_NAME')
 Queue_URL = os.getenv("QUEUE_URL")
+DynamoDB_session = os.getenv("DYNAMODB_SESSION")
+DynamoDB_objects = os.getenv("DYNAMODB_OBJECTS")
 from db_for_prediction import DynamoDBDatabaseHandler
 if S3_bucket_name is not None:
     ENVIRONMENT = 'dev' if 'dev' in S3_bucket_name.lower() else 'prod'
-    db = DynamoDBDatabaseHandler(env=ENVIRONMENT, table_prefix='majd')
+    db = DynamoDBDatabaseHandler(DynamoDB_session, DynamoDB_objects)
 else :
     db = None
     ENVIRONMENT = 'dev'
