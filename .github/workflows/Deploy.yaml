@@ -7,7 +7,7 @@ on:
         required: true
       AWS_SECRET_ACCESS_KEY:
         required: true
-      PAT_GIT:
+      GHCR_PAT:
         required: true
       TOKEN:
         required: true
@@ -30,9 +30,9 @@ jobs:
 
       - name: Clone infra repo (Repo B)
         env:
-          INFRA_REPO_PAT: ${{ secrets.INFRA_REPO_PAT }}
+          GHCR_PAT: ${{ secrets.GHCR_PAT }}
         run: |
-          git clone https://x-access-token:${INFRA_REPO_PAT}@github.com/majdabbas9/polybot_infra.git
+          git clone https://x-access-token:${GHCR_PAT}@github.com/majdabbas9/polybot_infra.git
           cd polybot_infra
 
           ls -la  # confirm repo is cloned
@@ -51,7 +51,7 @@ jobs:
       - name: Configure Git
         working-directory: polybot_infra
         env:
-          TOKEN: ${{ secrets.PAT_GIT }}
+          TOKEN: ${{ secrets.GHCR_PAT }}
         run: |
           git config user.name "majdabbas9"
           git config user.email "majd.abbas999@gmail.com"
