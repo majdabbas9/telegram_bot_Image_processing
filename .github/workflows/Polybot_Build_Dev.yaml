@@ -6,6 +6,9 @@ on:
      - dev4
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   Build:
     runs-on: ubuntu-latest
