@@ -30,7 +30,7 @@ jobs:
         env:
           INFRA_REPO_PAT: ${{ secrets.INFRA_REPO_PAT }}
         run: |
-          git clone https://x-access-token:${INFRA_REPO_PAT}@github.com/majdabbas9/polybot_infra
+          git clone https://x-access-token:${INFRA_REPO_PAT}@github.com/majdabbas9/polybot_infra.git
           cd polybot_infra
 
           ls -la  # confirm repo is cloned
@@ -54,6 +54,8 @@ jobs:
 
       - name: Commit and push changes to infra repo
         working-directory: polybot_infra
+        env:
+          INFRA_REPO_PAT: ${{ secrets.INFRA_REPO_PAT }}
         run: |
           git add polybot-k8s/polybot-dev/polybot.yaml
           git add polybot-k8s/yolo-dev/yolo.yaml
