@@ -27,7 +27,7 @@ jobs:
       - id: step1
         run: |
           img_name="ghcr.io/majdabbas9/polybot_dev_image:${{ github.run_number }}"
-          docker build --push -t "$img_name" .
+#          docker build --push -t "$img_name" .
           echo "image=$img_name" >> "$GITHUB_OUTPUT"
 
       # 🔐 Push the image name to AWS SSM
@@ -38,14 +38,14 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Store image name in SSM
-        run: |
-          aws ssm put-parameter \
-            --name "/majd/dev/polybot_image_name" \
-            --value "${{ steps.step1.outputs.image }}" \
-            --type "SecureString" \
-            --overwrite \
-            --region "eu-west-1"
+#      - name: Store image name in SSM
+#        run: |
+#          aws ssm put-parameter \
+#            --name "/majd/dev/polybot_image_name" \
+#            --value "${{ steps.step1.outputs.image }}" \
+#            --type "SecureString" \
+#            --overwrite \
+#            --region "eu-west-1"
   Deploy:
     needs: Build
     uses: ./.github/workflows/Deploy.yaml
