@@ -56,14 +56,9 @@ jobs:
           git config user.name "majdabbas9"
           git config user.email "majd.abbas999@gmail.com"
           git remote set-url origin https://x-access-token:${TOKEN}@github.com/majdabbas9/polybot_infra.git
-
-      - name: Commit and push changes to infra repo
-        working-directory: polybot_infra
-        run: |
           git add polybot-k8s/polybot-dev/polybot.yaml
           git add polybot-k8s/yolo-dev/yolo.yaml
           git add polybot-k8s/polybot-prod/polybot.yaml
           git add polybot-k8s/yolo-prod/yolo.yaml
           git commit -m "ci: update polybot deployment YAMLs with latest image from SSM" || echo "No changes to commit"
           git push origin main
-      
