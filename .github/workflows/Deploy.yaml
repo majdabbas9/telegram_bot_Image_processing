@@ -1,0 +1,71 @@
+name: Init Control Plane
+
+on:
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      PAT_GIT:
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  Init_control_plane:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name : get host name
+        id: extract-ip
+        run: |
+          cd tf
+          terraform init
+          ip=$(terraform output -raw control_plane_public_ip)
+          echo "CONTROL_PLANE_IP=$ip" >> $GITHUB_ENV
+          echo "cp-ip-next-wf=$ip" >> $GITHUB_OUTPUT
+          cd ..
+
+      - name: Clone infra repo (Repo B)
+        env:
+          INFRA_REPO_PAT: ${{ secrets.INFRA_REPO_PAT }}
+        run: |
+          git clone https://x-access-token:${INFRA_REPO_PAT}@github.com/YOUR_USERNAME/polybot-infra.git
+          cd polybot-infra
+          ls -la  # confirm repo is cloned
+
+      - name: Apply image updates to infra repo
+        working-directory: polybot-infra
+        env:
+          PYTHONUNBUFFERED: 1
+        run: |
+          python3 ../argoCD_main/change_yaml.py --src polybot-k8s/polybot-dev/polybot.yaml --dest polybot-k8s/polybot-dev/polybot.yaml --ssm /majd/dev/polybot_image_name --region eu-west-1
+          python3 ../argoCD_main/change_yaml.py --src polybot-k8s/yolo-dev/yolo.yaml --dest polybot-k8s/yolo-dev/yolo.yaml --ssm /majd/dev/yolo_image_name --region eu-west-1
+          python3 ../argoCD_main/change_yaml.py --src polybot-k8s/polybot-prod/polybot.yaml --dest polybot-k8s/polybot-prod/polybot.yaml --ssm /majd/prod/polybot_image_name --region eu-west-1
+          python3 ../argoCD_main/change_yaml.py --src polybot-k8s/yolo-prod/yolo.yaml --dest polybot-k8s/yolo-prod/yolo.yaml --ssm /majd/prod/yolo_image_name --region eu-west-1
+
+      - name: Configure Git
+        working-directory: polybot-infra
+        run: |
+          git config user.name "majdabbas9"
+          git config user.email "majd.abbas999@gmail.com"
+
+      - name: Commit and push changes to infra repo
+        working-directory: polybot-infra
+        run: |
+          git add polybot-k8s/polybot-dev/polybot.yaml
+          git add polybot-k8s/yolo-dev/yolo.yaml
+          git add polybot-k8s/polybot-prod/polybot.yaml
+          git add polybot-k8s/yolo-prod/yolo.yaml
+          git commit -m "ci: update polybot deployment YAMLs with latest image from SSM" || echo "No changes to commit"
+          git push origin main
+      
