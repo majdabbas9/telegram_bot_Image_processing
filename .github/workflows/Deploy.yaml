@@ -25,15 +25,6 @@ jobs:
           aws-region: eu-west-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name : get host name
-        id: extract-ip
-        run: |
-          cd tf
-          terraform init
-          ip=$(terraform output -raw control_plane_public_ip)
-          echo "CONTROL_PLANE_IP=$ip" >> $GITHUB_ENV
-          echo "cp-ip-next-wf=$ip" >> $GITHUB_OUTPUT
-          cd ..
 
       - name: Clone infra repo (Repo B)
         env:
