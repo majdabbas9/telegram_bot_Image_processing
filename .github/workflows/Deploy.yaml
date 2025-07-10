@@ -40,10 +40,11 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
         run: |
-          python3 ../argoCD_main/change_yaml.py --src polybot-k8s/polybot-dev/polybot.yaml --dest polybot-k8s/polybot-dev/polybot.yaml --ssm /majd/dev/polybot_image_name --region eu-west-1
-          python3 ../argoCD_main/change_yaml.py --src polybot-k8s/yolo-dev/yolo.yaml --dest polybot-k8s/yolo-dev/yolo.yaml --ssm /majd/dev/yolo_image_name --region eu-west-1
-          python3 ../argoCD_main/change_yaml.py --src polybot-k8s/polybot-prod/polybot.yaml --dest polybot-k8s/polybot-prod/polybot.yaml --ssm /majd/prod/polybot_image_name --region eu-west-1
-          python3 ../argoCD_main/change_yaml.py --src polybot-k8s/yolo-prod/yolo.yaml --dest polybot-k8s/yolo-prod/yolo.yaml --ssm /majd/prod/yolo_image_name --region eu-west-1
+          ls -la
+          python3 argoCD_main/change_yaml.py --src polybot-k8s/polybot-dev/polybot.yaml --dest polybot-k8s/polybot-dev/polybot.yaml --ssm /majd/dev/polybot_image_name --region eu-west-1
+          python3 argoCD_main/change_yaml.py --src polybot-k8s/yolo-dev/yolo.yaml --dest polybot-k8s/yolo-dev/yolo.yaml --ssm /majd/dev/yolo_image_name --region eu-west-1
+          python3 argoCD_main/change_yaml.py --src polybot-k8s/polybot-prod/polybot.yaml --dest polybot-k8s/polybot-prod/polybot.yaml --ssm /majd/prod/polybot_image_name --region eu-west-1
+          python3 argoCD_main/change_yaml.py --src polybot-k8s/yolo-prod/yolo.yaml --dest polybot-k8s/yolo-prod/yolo.yaml --ssm /majd/prod/yolo_image_name --region eu-west-1
 
       - name: Configure Git
         working-directory: polybot_infra
