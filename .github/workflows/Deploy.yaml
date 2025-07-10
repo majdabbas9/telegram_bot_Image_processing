@@ -9,6 +9,8 @@ on:
         required: true
       PAT_GIT:
         required: true
+      TOKEN:
+        required: true
 
 permissions:
   contents: write
@@ -49,11 +51,11 @@ jobs:
       - name: Configure Git
         working-directory: polybot_infra
         env:
-          INFRA_REPO_PAT: ${{ secrets.INFRA_REPO_PAT }}
+          TOKEN: ${{ secrets.TOKEN }}
         run: |
           git config user.name "majdabbas9"
           git config user.email "majd.abbas999@gmail.com"
-          git remote set-url origin https://x-access-token:${INFRA_REPO_PAT}@github.com/majdabbas9/polybot_infra.git
+          git remote set-url origin https://x-access-token:${TOKEN}@github.com/majdabbas9/polybot_infra.git
 
       - name: Commit and push changes to infra repo
         working-directory: polybot_infra
