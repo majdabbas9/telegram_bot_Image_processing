@@ -30,7 +30,7 @@ jobs:
         env:
           INFRA_REPO_PAT: ${{ secrets.INFRA_REPO_PAT }}
         run: |
-          git clone https://x-access-token:${INFRA_REPO_PAT}@github.com/YOUR_USERNAME/polybot-infra.git
+          git clone https://x-access-token:${INFRA_REPO_PAT}@github.com/majdabbas9/polybot_infra
           cd polybot-infra
           ls -la  # confirm repo is cloned
 
