@@ -57,6 +57,7 @@ jobs:
         env:
           INFRA_REPO_PAT: ${{ secrets.INFRA_REPO_PAT }}
         run: |
+          git remote set-url origin https://x-access-token:${INFRA_REPO_PAT}@github.com/majdabbas9/polybot_infra.git
           git add polybot-k8s/polybot-dev/polybot.yaml
           git add polybot-k8s/yolo-dev/yolo.yaml
           git add polybot-k8s/polybot-prod/polybot.yaml
