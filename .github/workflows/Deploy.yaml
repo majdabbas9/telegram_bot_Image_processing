@@ -31,11 +31,12 @@ jobs:
           INFRA_REPO_PAT: ${{ secrets.INFRA_REPO_PAT }}
         run: |
           git clone https://x-access-token:${INFRA_REPO_PAT}@github.com/majdabbas9/polybot_infra
-          cd polybot-infra
+          cd polybot_infra
+
           ls -la  # confirm repo is cloned
 
       - name: Apply image updates to infra repo
-        working-directory: polybot-infra
+        working-directory: polybot_infra
         env:
           PYTHONUNBUFFERED: 1
         run: |
@@ -45,13 +46,13 @@ jobs:
           python3 ../argoCD_main/change_yaml.py --src polybot-k8s/yolo-prod/yolo.yaml --dest polybot-k8s/yolo-prod/yolo.yaml --ssm /majd/prod/yolo_image_name --region eu-west-1
 
       - name: Configure Git
-        working-directory: polybot-infra
+        working-directory: polybot_infra
         run: |
           git config user.name "majdabbas9"
           git config user.email "majd.abbas999@gmail.com"
 
       - name: Commit and push changes to infra repo
-        working-directory: polybot-infra
+        working-directory: polybot_infra
         run: |
           git add polybot-k8s/polybot-dev/polybot.yaml
           git add polybot-k8s/yolo-dev/yolo.yaml
