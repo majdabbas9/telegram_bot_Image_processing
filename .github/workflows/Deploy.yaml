@@ -51,7 +51,7 @@ jobs:
       - name: Configure Git
         working-directory: polybot_infra
         env:
-          TOKEN: ${{ secrets.TOKEN }}
+          TOKEN: ${{ secrets.PAT_GIT }}
         run: |
           git config user.name "majdabbas9"
           git config user.email "majd.abbas999@gmail.com"
