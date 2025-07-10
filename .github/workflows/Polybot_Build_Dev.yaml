@@ -27,7 +27,7 @@ jobs:
       - id: step1
         run: |
           img_name="ghcr.io/majdabbas9/polybot_dev_image:${{ github.run_number }}"
-#          docker build --push -t "$img_name" .
+          # docker build --push -t "$img_name" .
           echo "image=$img_name" >> "$GITHUB_OUTPUT"
 
       # 🔐 Push the image name to AWS SSM
