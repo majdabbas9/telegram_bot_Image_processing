@@ -1,0 +1,64 @@
+name: Init Control Plane
+
+on:
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      GHCR_PAT:
+        required: true
+      TOKEN:
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  Init_control_plane:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Clone infra repo (Repo B)
+        env:
+          GHCR_PAT: ${{ secrets.GHCR_PAT }}
+        run: |
+          git clone https://x-access-token:${GHCR_PAT}@github.com/majdabbas9/polybot_infra.git
+          cd polybot_infra
+
+          ls -la  # confirm repo is cloned
+
+      - name: Apply image updates to infra repo
+        working-directory: polybot_infra
+        env:
+          PYTHONUNBUFFERED: 1
+        run: |
+          ls -la
+          python3 argoCD_main/change_yaml.py --src polybot-k8s/polybot-dev/polybot.yaml --dest polybot-k8s/polybot-dev/polybot.yaml --ssm /majd/dev/polybot_image_name --region eu-west-1
+          python3 argoCD_main/change_yaml.py --src polybot-k8s/yolo-dev/yolo.yaml --dest polybot-k8s/yolo-dev/yolo.yaml --ssm /majd/dev/yolo_image_name --region eu-west-1
+          python3 argoCD_main/change_yaml.py --src polybot-k8s/polybot-prod/polybot.yaml --dest polybot-k8s/polybot-prod/polybot.yaml --ssm /majd/prod/polybot_image_name --region eu-west-1
+          python3 argoCD_main/change_yaml.py --src polybot-k8s/yolo-prod/yolo.yaml --dest polybot-k8s/yolo-prod/yolo.yaml --ssm /majd/prod/yolo_image_name --region eu-west-1
+
+      - name: Configure Git
+        working-directory: polybot_infra
+        env:
+          TOKEN: ${{ secrets.GHCR_PAT }}
+        run: |
+          git config user.name "majdabbas9"
+          git config user.email "majd.abbas999@gmail.com"
+          git remote set-url origin https://x-access-token:${TOKEN}@github.com/majdabbas9/polybot_infra.git
+          git add polybot-k8s/polybot-dev/polybot.yaml
+          git add polybot-k8s/yolo-dev/yolo.yaml
+          git add polybot-k8s/polybot-prod/polybot.yaml
+          git add polybot-k8s/yolo-prod/yolo.yaml
+          git commit -m "ci: update polybot deployment YAMLs with latest image from SSM" || echo "No changes to commit"
+          git push origin main

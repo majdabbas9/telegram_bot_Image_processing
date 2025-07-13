@@ -6,6 +6,9 @@ on:
      - dev4
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -43,3 +46,11 @@ jobs:
             --type "SecureString" \
             --overwrite \
             --region "eu-west-1"
+  Deploy:
+    needs: Build
+    uses: ./.github/workflows/Deploy.yaml
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      GHCR_PAT: ${{ secrets.GHCR_PAT }}
+      TOKEN: ${{ secrets.TOKEN_GH }}
